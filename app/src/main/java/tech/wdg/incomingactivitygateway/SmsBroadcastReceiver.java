@@ -56,6 +56,13 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             return;
         }
 
+        // Spam filtresi kontrolü
+        SmsSpamFilter spamFilter = new SmsSpamFilter(context);
+        if (spamFilter.isSpam(content.toString())) {
+            android.util.Log.d("SmsBroadcastReceiver", "SMS spam olarak algılandı ve işlenmeyecek: " + content.toString());
+            return; // Spam mesajını işleme alma
+        }
+
         for (ForwardingConfig config : configs) {
             if (!config.isOn) {
                 continue;

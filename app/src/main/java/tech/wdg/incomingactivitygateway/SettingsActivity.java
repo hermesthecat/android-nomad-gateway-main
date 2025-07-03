@@ -61,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
     private MaterialButton btnCopyLogs;
     private MaterialButton btnOperatorSettings;
     private MaterialButton btnAppWebhooks;
+    private MaterialButton btnSmsSpamFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnCopyLogs = findViewById(R.id.btn_copy_logs);
         btnOperatorSettings = findViewById(R.id.btn_operator_settings);
         btnAppWebhooks = findViewById(R.id.btn_app_webhooks);
+        btnSmsSpamFilter = findViewById(R.id.btn_sms_spam_filter);
     }
 
     private void setupClickListeners() {
@@ -122,6 +124,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnCopyLogs.setOnClickListener(v -> copyLogsToClipboard());
         btnOperatorSettings.setOnClickListener(v -> openOperatorSettings());
         btnAppWebhooks.setOnClickListener(v -> openAppWebhooks());
+        btnSmsSpamFilter.setOnClickListener(v -> openSmsSpamFilter());
 
         // Add click listeners for permission chips to open settings
         chipSmsPermission.setOnClickListener(v -> openAppSettings());
@@ -377,6 +380,11 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void openSmsSpamFilter() {
+        Intent intent = new Intent(this, SmsSpamFilterActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -417,6 +425,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnCopyLogs = null;
         btnOperatorSettings = null;
         btnAppWebhooks = null;
+        btnSmsSpamFilter = null;
 
         Log.d(TAG, "SettingsActivity destroyed and cleaned up");
     }

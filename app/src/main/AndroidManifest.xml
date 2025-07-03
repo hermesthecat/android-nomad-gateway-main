@@ -163,6 +163,13 @@
             android:theme="@style/AppTheme"
             android:enableOnBackInvokedCallback="true" />
 
+        <activity
+            android:name=".SmsSpamFilterActivity"
+            android:exported="false"
+            android:parentActivityName=".SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:enableOnBackInvokedCallback="true" />
+
     </application>
 
 </manifest>
