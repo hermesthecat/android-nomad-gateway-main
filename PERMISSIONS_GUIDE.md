@@ -216,14 +216,14 @@ The Settings activity now displays comprehensive permission status:
 
 ### Permission Denied Solutions
 
-#### If permissions are denied:
+#### If permissions are denied
 
 1. **Open Settings** → Tap any red "Denied" chip
 2. **Grant permissions** in the system settings
 3. **Return to app** → Status will update automatically
 4. **Restart service** if needed
 
-#### For Notification Listener:
+#### For Notification Listener
 
 1. **Tap "Read Notifications"** chip in Settings
 2. **Find "Activity Gateway"** in the list

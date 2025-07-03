@@ -26,7 +26,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 ### 3. Set Up Test Webhook
 
-1. Go to https://webhook.site
+1. Go to <https://webhook.site>
 2. Copy the unique URL (e.g., `https://webhook.site/12345678-1234-1234-1234-123456789abc`)
 3. Use this URL in your forwarding rules
 

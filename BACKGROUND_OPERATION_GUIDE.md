@@ -40,7 +40,7 @@ This guide documents the comprehensive background operation improvements impleme
 - **Triggers**: App updates, custom restart broadcasts
 - **Smart Logic**: Only restarts if service was expected to be running
 
-#### ✅ **Enhanced Boot Receiver**
+#### ✅ **Boot Completed Receiver Details**
 
 - **Multiple Boot Actions**: Handles various boot completion events
 - **Manufacturer Support**: Includes HTC and other vendor-specific boot actions
@@ -62,6 +62,18 @@ This guide documents the comprehensive background operation improvements impleme
 - **Oppo/OnePlus**: Auto-start and battery optimization guidance
 - **Vivo**: Background app limit and whitelist guidance
 
+#### ✅ **Boot Completed Receiver Manifest Entry**
+
+```xml
+<receiver android:name=".BootCompletedReceiver">
+    <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+    </intent-filter>
+</receiver>
+```
+
 ### 4. Manifest Enhancements
 
 #### ✅ **Service Configuration**
@@ -79,18 +91,6 @@ This guide documents the comprehensive background operation improvements impleme
 
 - `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`: For battery optimization settings
 - `SYSTEM_ALERT_WINDOW`: For system-level notifications (if needed)
-
-#### ✅ **Enhanced Boot Receiver**
-
-```xml
-<receiver android:name=".BootCompletedReceiver">
-    <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED" />
-        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-    </intent-filter>
-</receiver>
-```
 
 ## Architecture Benefits
 

@@ -42,7 +42,7 @@ Configure enhanced data for dedicated app webhook events (app start, SIM status 
 
 Each forwarding rule can have its own enhanced data configuration, providing granular control over what information to include with each specific webhook.
 
-## Per-Rule Enhanced Data Configuration
+## Configuring Per-Rule Enhanced Data
 
 When creating or editing a forwarding rule, you can configure enhanced data options specifically for that rule:
 
