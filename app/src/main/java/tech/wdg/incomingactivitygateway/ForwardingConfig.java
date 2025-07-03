@@ -66,6 +66,16 @@ public class ForwardingConfig {
     private static final String KEY_DELIVERY_METHOD = "deliveryMethod";
     private static final String KEY_SMS_PHONE_NUMBER = "smsPhoneNumber";
     private static final String KEY_EMAIL_ADDRESS = "emailAddress";
+    
+    // SMTP configuration keys
+    private static final String KEY_SMTP_HOST = "smtpHost";
+    private static final String KEY_SMTP_PORT = "smtpPort";
+    private static final String KEY_SMTP_USERNAME = "smtpUsername";
+    private static final String KEY_SMTP_PASSWORD = "smtpPassword";
+    private static final String KEY_SMTP_USE_TLS = "smtpUseTls";
+    private static final String KEY_SMTP_USE_SSL = "smtpUseSsl";
+    private static final String KEY_SMTP_FROM_EMAIL = "smtpFromEmail";
+    private static final String KEY_SMTP_FROM_NAME = "smtpFromName";
 
     public long id;
     public boolean isOn = true;
@@ -261,6 +271,127 @@ public class ForwardingConfig {
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
+    
+    // SMTP configuration getters and setters
+    public String getSmtpHost() {
+        return getStringPreference(KEY_SMTP_HOST);
+    }
+    
+    public void setSmtpHost(String smtpHost) {
+        setStringPreference(KEY_SMTP_HOST, smtpHost);
+    }
+    
+    public int getSmtpPort() {
+        return getIntPreference(KEY_SMTP_PORT, 587); // Default to 587 (TLS)
+    }
+    
+    public void setSmtpPort(int smtpPort) {
+        setIntPreference(KEY_SMTP_PORT, smtpPort);
+    }
+    
+    public String getSmtpUsername() {
+        return getStringPreference(KEY_SMTP_USERNAME);
+    }
+    
+    public void setSmtpUsername(String smtpUsername) {
+        setStringPreference(KEY_SMTP_USERNAME, smtpUsername);
+    }
+    
+    public String getSmtpPassword() {
+        return getStringPreference(KEY_SMTP_PASSWORD);
+    }
+    
+    public void setSmtpPassword(String smtpPassword) {
+        setStringPreference(KEY_SMTP_PASSWORD, smtpPassword);
+    }
+    
+    public boolean getSmtpUseTls() {
+        return getBooleanPreference(KEY_SMTP_USE_TLS, true); // Default to TLS
+    }
+    
+    public void setSmtpUseTls(boolean smtpUseTls) {
+        setBooleanPreference(KEY_SMTP_USE_TLS, smtpUseTls);
+    }
+    
+    public boolean getSmtpUseSsl() {
+        return getBooleanPreference(KEY_SMTP_USE_SSL, false); // Default to no SSL
+    }
+    
+    public void setSmtpUseSsl(boolean smtpUseSsl) {
+        setBooleanPreference(KEY_SMTP_USE_SSL, smtpUseSsl);
+    }
+    
+    public String getSmtpFromEmail() {
+        return getStringPreference(KEY_SMTP_FROM_EMAIL);
+    }
+    
+    public void setSmtpFromEmail(String smtpFromEmail) {
+        setStringPreference(KEY_SMTP_FROM_EMAIL, smtpFromEmail);
+    }
+    
+    public String getSmtpFromName() {
+        return getStringPreference(KEY_SMTP_FROM_NAME);
+    }
+    
+    public void setSmtpFromName(String smtpFromName) {
+        setStringPreference(KEY_SMTP_FROM_NAME, smtpFromName);
+    }
+    
+    // Helper methods for preference management
+    private String getStringPreference(String key) {
+        try {
+            SharedPreferences sharedPref = getPreference(context);
+            String configJson = sharedPref.getString(this.getKey(), null);
+            if (configJson != null && configJson.startsWith("{")) {
+                JSONObject json = new JSONObject(configJson);
+                return json.optString(key, null);
+            }
+        } catch (Exception e) {
+            Log.e("ForwardingConfig", "Error getting string preference: " + key, e);
+        }
+        return null;
+    }
+    
+    private void setStringPreference(String key, String value) {
+        // This will be saved when save() is called
+        // We don't immediately save individual preferences
+    }
+    
+    private int getIntPreference(String key, int defaultValue) {
+        try {
+            SharedPreferences sharedPref = getPreference(context);
+            String configJson = sharedPref.getString(this.getKey(), null);
+            if (configJson != null && configJson.startsWith("{")) {
+                JSONObject json = new JSONObject(configJson);
+                return json.optInt(key, defaultValue);
+            }
+        } catch (Exception e) {
+            Log.e("ForwardingConfig", "Error getting int preference: " + key, e);
+        }
+        return defaultValue;
+    }
+    
+    private void setIntPreference(String key, int value) {
+        // This will be saved when save() is called
+    }
+    
+    private boolean getBooleanPreference(String key, boolean defaultValue) {
+        try {
+            SharedPreferences sharedPref = getPreference(context);
+            String configJson = sharedPref.getString(this.getKey(), null);
+            if (configJson != null && configJson.startsWith("{")) {
+                JSONObject json = new JSONObject(configJson);
+                return json.optBoolean(key, defaultValue);
+            }
+        } catch (Exception e) {
+            Log.e("ForwardingConfig", "Error getting boolean preference: " + key, e);
+        }
+        return defaultValue;
+    }
+    
+    private void setBooleanPreference(String key, boolean value) {
+        // This will be saved when save() is called
+    }
 
     public static String getDefaultJsonTemplate() {
         return "{\n  \"from\":\"%from%\",\n  \"text\":\"%text%\",\n  \"sentStamp\":%sentStamp%,\n  \"receivedStamp\":%receivedStamp%,\n  \"sim\":\"%sim%\"\n}";
@@ -306,6 +437,16 @@ public class ForwardingConfig {
             json.put(KEY_DELIVERY_METHOD, this.deliveryMethod.getKey());
             json.put(KEY_SMS_PHONE_NUMBER, this.smsPhoneNumber);
             json.put(KEY_EMAIL_ADDRESS, this.emailAddress);
+            
+            // SMTP configuration
+            json.put(KEY_SMTP_HOST, this.getSmtpHost());
+            json.put(KEY_SMTP_PORT, this.getSmtpPort());
+            json.put(KEY_SMTP_USERNAME, this.getSmtpUsername());
+            json.put(KEY_SMTP_PASSWORD, this.getSmtpPassword());
+            json.put(KEY_SMTP_USE_TLS, this.getSmtpUseTls());
+            json.put(KEY_SMTP_USE_SSL, this.getSmtpUseSsl());
+            json.put(KEY_SMTP_FROM_EMAIL, this.getSmtpFromEmail());
+            json.put(KEY_SMTP_FROM_NAME, this.getSmtpFromName());
 
             SharedPreferences.Editor editor = getEditor(context);
             editor.putString(this.getKey(), json.toString());

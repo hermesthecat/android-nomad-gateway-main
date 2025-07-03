@@ -24,11 +24,13 @@ public class DeliveryRouter {
     private final Context context;
     private final SmsDeliveryService smsService;
     private final EmailDeliveryService emailService;
+    private final SmtpEmailDeliveryService smtpEmailService;
 
     public DeliveryRouter(Context context) {
         this.context = context;
         this.smsService = new SmsDeliveryService(context);
         this.emailService = new EmailDeliveryService(context);
+        this.smtpEmailService = new SmtpEmailDeliveryService(context);
     }
 
     /**
@@ -145,9 +147,58 @@ public class DeliveryRouter {
     }
 
     /**
-     * Route email delivery
+     * Route email delivery using SMTP
      */
     private boolean routeEmailDelivery(ForwardingConfig config, String eventType, JSONObject messageData) {
+        try {
+            // Check if SMTP is configured
+            if (SmtpEmailDeliveryService.isSmtpConfigured(config)) {
+                return routeSmtpEmailDelivery(config, eventType, messageData);
+            } else {
+                // Fallback to system email client
+                return routeSystemEmailDelivery(config, eventType, messageData);
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to route email delivery", e);
+            return false;
+        }
+    }
+    
+    /**
+     * Route SMTP email delivery (automatic sending)
+     */
+    private boolean routeSmtpEmailDelivery(ForwardingConfig config, String eventType, JSONObject messageData) {
+        try {
+            String subject = createEmailSubject(eventType, messageData);
+            String htmlContent = smtpEmailService.createHtmlEmailFromActivityData(eventType, messageData);
+            
+            // Send email asynchronously using SMTP
+            smtpEmailService.sendEmailAsync(config, subject, htmlContent, new SmtpEmailDeliveryService.EmailCallback() {
+                @Override
+                public void onSuccess(String messageId) {
+                    Log.d(TAG, "SMTP email sent successfully. Message ID: " + messageId);
+                }
+                
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "SMTP email delivery failed: " + error);
+                }
+            });
+            
+            Log.d(TAG, "SMTP email delivery initiated successfully");
+            return true;
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to route SMTP email delivery", e);
+            return false;
+        }
+    }
+    
+    /**
+     * Route system email delivery (fallback - opens email client)
+     */
+    private boolean routeSystemEmailDelivery(ForwardingConfig config, String eventType, JSONObject messageData) {
         try {
             String emailAddress = config.getEmailAddress();
             if (emailAddress == null || emailAddress.trim().isEmpty()) {
@@ -159,19 +210,19 @@ public class DeliveryRouter {
             String subject = createEmailSubject(eventType, messageData);
             String emailContent = emailService.createEmailFromActivityData(eventType, messageData);
             
-            // Send email using the service
+            // Send email using system email client
             boolean success = emailService.sendEmail(emailAddress, subject, emailContent, true);
             
             if (success) {
-                Log.d(TAG, "Email delivery initiated successfully");
+                Log.d(TAG, "System email delivery initiated successfully");
             } else {
-                Log.e(TAG, "Email delivery failed");
+                Log.e(TAG, "System email delivery failed");
             }
             
             return success;
 
         } catch (Exception e) {
-            Log.e(TAG, "Failed to route email delivery", e);
+            Log.e(TAG, "Failed to route system email delivery", e);
             return false;
         }
     }

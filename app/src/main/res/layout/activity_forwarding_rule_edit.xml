@@ -454,6 +454,222 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <!-- SMTP Configuration Toggle -->
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_smtp_config"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:text="Enable SMTP Configuration (Automatic Sending)"
+                            android:textAppearance="@style/TextAppearance.App.BodyMedium" />
+
+                        <!-- SMTP Configuration Container -->
+                        <LinearLayout
+                            android:id="@+id/smtp_config_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/template_variables_background"
+                            android:padding="16dp">
+
+                            <!-- SMTP Provider Preset -->
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                                android:hint="Email Provider"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp"
+                                app:helperText="Select your email provider for automatic configuration">
+
+                                <AutoCompleteTextView
+                                    android:id="@+id/smtp_provider_dropdown"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="none"
+                                    android:focusable="false"
+                                    android:text="Gmail" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <!-- SMTP Host -->
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="SMTP Host"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_smtp_host"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textUri"
+                                    android:text="smtp.gmail.com" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <!-- SMTP Port and Security -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="12dp">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginEnd="8dp"
+                                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                    android:hint="Port"
+                                    app:boxCornerRadiusTopStart="8dp"
+                                    app:boxCornerRadiusTopEnd="8dp"
+                                    app:boxCornerRadiusBottomStart="8dp"
+                                    app:boxCornerRadiusBottomEnd="8dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/input_smtp_port"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="number"
+                                        android:text="587" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:layout_marginStart="8dp">
+
+                                    <com.google.android.material.switchmaterial.SwitchMaterial
+                                        android:id="@+id/switch_smtp_tls"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Use TLS"
+                                        android:checked="true"
+                                        android:textSize="14sp" />
+
+                                    <com.google.android.material.switchmaterial.SwitchMaterial
+                                        android:id="@+id/switch_smtp_ssl"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Use SSL"
+                                        android:textSize="14sp" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!-- SMTP Username -->
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="SMTP Username"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp"
+                                app:helperText="Usually your email address">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_smtp_username"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textEmailAddress" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <!-- SMTP Password -->
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="SMTP Password"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp"
+                                app:helperText="Use App Password for Gmail/Yahoo"
+                                app:endIconMode="password_toggle">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_smtp_password"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPassword" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <!-- SMTP From Email -->
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="From Email Address"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp"
+                                app:helperText="Email address to send from (usually same as username)">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_smtp_from_email"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textEmailAddress" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <!-- SMTP From Name -->
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="From Name (Optional)"
+                                app:boxCornerRadiusTopStart="8dp"
+                                app:boxCornerRadiusTopEnd="8dp"
+                                app:boxCornerRadiusBottomStart="8dp"
+                                app:boxCornerRadiusBottomEnd="8dp"
+                                app:helperText="Display name for sender (e.g., Activity Gateway)">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_smtp_from_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPersonName"
+                                    android:text="Activity Gateway" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <!-- Test SMTP Connection Button -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_test_smtp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Test SMTP Connection"
+                                app:icon="@drawable/ic_check_circle"
+                                style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
