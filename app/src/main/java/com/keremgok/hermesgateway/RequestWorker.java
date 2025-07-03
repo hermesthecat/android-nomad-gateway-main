@@ -14,11 +14,14 @@ public class RequestWorker extends Worker {
     public final static String DATA_IGNORE_SSL = "IGNORE_SSL";
     public final static String DATA_MAX_RETRIES = "MAX_RETRIES";
     public final static String DATA_CHUNKED_MODE = "CHUNKED_MODE";
+    
+    private final DeliveryStatistics statistics;
 
     public RequestWorker(
             @NonNull Context context,
             @NonNull WorkerParameters params) {
         super(context, params);
+        this.statistics = new DeliveryStatistics(context);
     }
 
     @NonNull
@@ -48,9 +51,13 @@ public class RequestWorker extends Worker {
         }
 
         if (result.equals(Request.RESULT_ERROR)) {
+            // Record webhook failure
+            statistics.recordWebhookFailure();
             return Result.failure();
         }
 
+        // Record webhook success
+        statistics.recordWebhookSuccess();
         return Result.success();
     }
 }

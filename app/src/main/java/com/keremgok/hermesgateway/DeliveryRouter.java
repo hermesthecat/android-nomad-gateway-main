@@ -25,12 +25,14 @@ public class DeliveryRouter {
     private final SmsDeliveryService smsService;
     private final EmailDeliveryService emailService;
     private final SmtpEmailDeliveryService smtpEmailService;
+    private final DeliveryStatistics statistics;
 
     public DeliveryRouter(Context context) {
         this.context = context;
         this.smsService = new SmsDeliveryService(context);
         this.emailService = new EmailDeliveryService(context);
         this.smtpEmailService = new SmtpEmailDeliveryService(context);
+        this.statistics = new DeliveryStatistics(context);
     }
 
     /**
@@ -104,6 +106,7 @@ public class DeliveryRouter {
             WorkManager.getInstance(context).enqueue(workRequest);
             
             Log.d(TAG, "HTTP POST delivery queued successfully");
+            // Note: Webhook success/failure will be tracked by RequestWorker
             return true;
 
         } catch (Exception e) {
@@ -134,8 +137,10 @@ public class DeliveryRouter {
             
             if (success) {
                 Log.d(TAG, "SMS delivery completed successfully");
+                statistics.recordSmsSuccess();
             } else {
                 Log.e(TAG, "SMS delivery failed");
+                statistics.recordSmsFailure();
             }
             
             return success;
@@ -178,11 +183,13 @@ public class DeliveryRouter {
                 @Override
                 public void onSuccess(String messageId) {
                     Log.d(TAG, "SMTP email sent successfully. Message ID: " + messageId);
+                    statistics.recordEmailSuccess();
                 }
                 
                 @Override
                 public void onError(String error) {
                     Log.e(TAG, "SMTP email delivery failed: " + error);
+                    statistics.recordEmailFailure();
                 }
             });
             
@@ -215,8 +222,10 @@ public class DeliveryRouter {
             
             if (success) {
                 Log.d(TAG, "System email delivery initiated successfully");
+                statistics.recordEmailSuccess();
             } else {
                 Log.e(TAG, "System email delivery failed");
+                statistics.recordEmailFailure();
             }
             
             return success;
@@ -363,4 +372,11 @@ public class DeliveryRouter {
                 return "Unknown requirements";
         }
     }
-} 
+
+    /**
+     * Get delivery statistics instance
+     */
+    public DeliveryStatistics getStatistics() {
+        return statistics;
+    }
+}

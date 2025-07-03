@@ -128,12 +128,42 @@ public class MainActivity extends AppCompatActivity implements ForwardingRulesAd
         chipCount = findViewById(R.id.chip_count);
         infoNotice = findViewById(R.id.info_notice);
 
+        // Initialize delivery statistics
+        initializeStatisticsViews();
+
         // Initialize filter chips
         chipGroupFilter = findViewById(R.id.chip_group_filter);
         chipFilterAll = findViewById(R.id.chip_filter_all);
         chipFilterSms = findViewById(R.id.chip_filter_sms);
         chipFilterPush = findViewById(R.id.chip_filter_push);
         chipFilterCalls = findViewById(R.id.chip_filter_calls);
+    }
+
+    /**
+     * Initialize delivery statistics views
+     */
+    private void initializeStatisticsViews() {
+        TextView statsWebhookCount = findViewById(R.id.stats_webhook_count);
+        TextView statsSmsCount = findViewById(R.id.stats_sms_count);
+        TextView statsEmailCount = findViewById(R.id.stats_email_count);
+        TextView statsOverallRate = findViewById(R.id.stats_overall_rate);
+        TextView statsWebhookRate = findViewById(R.id.stats_webhook_rate);
+        TextView statsSmsRate = findViewById(R.id.stats_sms_rate);
+        TextView statsEmailRate = findViewById(R.id.stats_email_rate);
+        TextView statsLastActivity = findViewById(R.id.stats_last_activity);
+
+        DeliveryRouter router = new DeliveryRouter(this);
+        DeliveryStatistics statistics = router.getStatistics();
+
+        // Set statistics values
+        statsWebhookCount.setText(String.valueOf(statistics.getWebhookSuccessCount()));
+        statsSmsCount.setText(String.valueOf(statistics.getSmsSuccessCount()));
+        statsEmailCount.setText(String.valueOf(statistics.getEmailSuccessCount()));
+        statsOverallRate.setText(DeliveryStatistics.formatSuccessRate(statistics.getOverallSuccessRate()));
+        statsWebhookRate.setText(DeliveryStatistics.formatSuccessRate(statistics.getWebhookSuccessRate()));
+        statsSmsRate.setText(DeliveryStatistics.formatSuccessRate(statistics.getSmsSuccessRate()));
+        statsEmailRate.setText(DeliveryStatistics.formatSuccessRate(statistics.getEmailSuccessRate()));
+        statsLastActivity.setText(DeliveryStatistics.formatLastActivity(statistics.getLastActivityTime()));
     }
 
     private void checkAndRequestPermissions() {
@@ -496,6 +526,9 @@ public class MainActivity extends AppCompatActivity implements ForwardingRulesAd
         if (context != null && adapter != null) {
             refreshList();
         }
+
+        // Refresh statistics views
+        initializeStatisticsViews();
     }
 
     @Override
