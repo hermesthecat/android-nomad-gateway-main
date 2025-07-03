@@ -37,8 +37,10 @@ public class DeliveryStatistics {
     private static final String KEY_LAST_ACTIVITY = "last_activity_time";
 
     private final SharedPreferences prefs;
+    private final Context context;
 
     public DeliveryStatistics(Context context) {
+        this.context = context;
         this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
@@ -108,6 +110,9 @@ public class DeliveryStatistics {
         }
         
         editor.apply();
+        
+        // Trigger widget update if any widgets are active
+        triggerWidgetUpdate();
     }
 
     /**
@@ -415,6 +420,19 @@ public class DeliveryStatistics {
             return (diff / 3600000) + " hours ago";
         } else {
             return (diff / 86400000) + " days ago";
+        }
+    }
+    
+    /**
+     * Trigger widget update if widgets are active
+     */
+    private void triggerWidgetUpdate() {
+        try {
+            if (StatisticsWidgetProvider.hasActiveWidgets(context)) {
+                StatisticsWidgetProvider.requestWidgetUpdate(context);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Error triggering widget update", e);
         }
     }
 }

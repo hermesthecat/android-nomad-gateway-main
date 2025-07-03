@@ -117,6 +117,20 @@
             </intent-filter>
         </receiver>
 
+        <!-- Statistics Widget Provider -->
+        <receiver
+            android:name=".StatisticsWidgetProvider"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.keremgok.hermesgateway.ACTION_UPDATE_WIDGET" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_statistics_info" />
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
