@@ -61,12 +61,12 @@ public class ForwardingConfig {
     private static final String KEY_INCLUDE_SIM_INFO = "includeSimInfo";
     private static final String KEY_INCLUDE_NETWORK_INFO = "includeNetworkInfo";
     private static final String KEY_INCLUDE_APP_CONFIG = "includeAppConfig";
-    
+
     // Delivery method configuration keys
     private static final String KEY_DELIVERY_METHOD = "deliveryMethod";
     private static final String KEY_SMS_PHONE_NUMBER = "smsPhoneNumber";
     private static final String KEY_EMAIL_ADDRESS = "emailAddress";
-    
+
     // SMTP configuration keys
     private static final String KEY_SMTP_HOST = "smtpHost";
     private static final String KEY_SMTP_PORT = "smtpPort";
@@ -99,7 +99,7 @@ public class ForwardingConfig {
     public boolean includeSimInfo = false;
     public boolean includeNetworkInfo = false;
     public boolean includeAppConfig = false;
-    
+
     // Delivery method configuration
     public DeliveryMethod deliveryMethod = DeliveryMethod.HTTP_POST;
     public String smsPhoneNumber;
@@ -246,97 +246,97 @@ public class ForwardingConfig {
     public void setIncludeAppConfig(boolean includeAppConfig) {
         this.includeAppConfig = includeAppConfig;
     }
-    
+
     // Delivery method getters and setters
     public DeliveryMethod getDeliveryMethod() {
         return this.deliveryMethod;
     }
-    
+
     public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
         this.deliveryMethod = deliveryMethod;
     }
-    
+
     public String getSmsPhoneNumber() {
         return this.smsPhoneNumber;
     }
-    
+
     public void setSmsPhoneNumber(String smsPhoneNumber) {
         this.smsPhoneNumber = smsPhoneNumber;
     }
-    
+
     public String getEmailAddress() {
         return this.emailAddress;
     }
-    
+
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
-    
+
     // SMTP configuration getters and setters
     public String getSmtpHost() {
         return getStringPreference(KEY_SMTP_HOST);
     }
-    
+
     public void setSmtpHost(String smtpHost) {
         setStringPreference(KEY_SMTP_HOST, smtpHost);
     }
-    
+
     public int getSmtpPort() {
         return getIntPreference(KEY_SMTP_PORT, 587); // Default to 587 (TLS)
     }
-    
+
     public void setSmtpPort(int smtpPort) {
         setIntPreference(KEY_SMTP_PORT, smtpPort);
     }
-    
+
     public String getSmtpUsername() {
         return getStringPreference(KEY_SMTP_USERNAME);
     }
-    
+
     public void setSmtpUsername(String smtpUsername) {
         setStringPreference(KEY_SMTP_USERNAME, smtpUsername);
     }
-    
+
     public String getSmtpPassword() {
         return getStringPreference(KEY_SMTP_PASSWORD);
     }
-    
+
     public void setSmtpPassword(String smtpPassword) {
         setStringPreference(KEY_SMTP_PASSWORD, smtpPassword);
     }
-    
+
     public boolean getSmtpUseTls() {
         return getBooleanPreference(KEY_SMTP_USE_TLS, true); // Default to TLS
     }
-    
+
     public void setSmtpUseTls(boolean smtpUseTls) {
         setBooleanPreference(KEY_SMTP_USE_TLS, smtpUseTls);
     }
-    
+
     public boolean getSmtpUseSsl() {
         return getBooleanPreference(KEY_SMTP_USE_SSL, false); // Default to no SSL
     }
-    
+
     public void setSmtpUseSsl(boolean smtpUseSsl) {
         setBooleanPreference(KEY_SMTP_USE_SSL, smtpUseSsl);
     }
-    
+
     public String getSmtpFromEmail() {
         return getStringPreference(KEY_SMTP_FROM_EMAIL);
     }
-    
+
     public void setSmtpFromEmail(String smtpFromEmail) {
         setStringPreference(KEY_SMTP_FROM_EMAIL, smtpFromEmail);
     }
-    
+
     public String getSmtpFromName() {
         return getStringPreference(KEY_SMTP_FROM_NAME);
     }
-    
+
     public void setSmtpFromName(String smtpFromName) {
         setStringPreference(KEY_SMTP_FROM_NAME, smtpFromName);
     }
-    
+
     // Helper methods for preference management
     private String getStringPreference(String key) {
         try {
@@ -351,12 +351,12 @@ public class ForwardingConfig {
         }
         return null;
     }
-    
+
     private void setStringPreference(String key, String value) {
         // This will be saved when save() is called
         // We don't immediately save individual preferences
     }
-    
+
     private int getIntPreference(String key, int defaultValue) {
         try {
             SharedPreferences sharedPref = getPreference(context);
@@ -370,11 +370,11 @@ public class ForwardingConfig {
         }
         return defaultValue;
     }
-    
+
     private void setIntPreference(String key, int value) {
         // This will be saved when save() is called
     }
-    
+
     private boolean getBooleanPreference(String key, boolean defaultValue) {
         try {
             SharedPreferences sharedPref = getPreference(context);
@@ -388,7 +388,7 @@ public class ForwardingConfig {
         }
         return defaultValue;
     }
-    
+
     private void setBooleanPreference(String key, boolean value) {
         // This will be saved when save() is called
     }
@@ -432,12 +432,12 @@ public class ForwardingConfig {
             json.put(KEY_INCLUDE_SIM_INFO, this.includeSimInfo);
             json.put(KEY_INCLUDE_NETWORK_INFO, this.includeNetworkInfo);
             json.put(KEY_INCLUDE_APP_CONFIG, this.includeAppConfig);
-            
+
             // Delivery method configuration
             json.put(KEY_DELIVERY_METHOD, this.deliveryMethod.getKey());
             json.put(KEY_SMS_PHONE_NUMBER, this.smsPhoneNumber);
             json.put(KEY_EMAIL_ADDRESS, this.emailAddress);
-            
+
             // SMTP configuration
             json.put(KEY_SMTP_HOST, this.getSmtpHost());
             json.put(KEY_SMTP_PORT, this.getSmtpPort());
@@ -541,7 +541,7 @@ public class ForwardingConfig {
                     if (json.has(KEY_INCLUDE_APP_CONFIG)) {
                         config.includeAppConfig = json.getBoolean(KEY_INCLUDE_APP_CONFIG);
                     }
-                    
+
                     // Load delivery method configuration
                     if (json.has(KEY_DELIVERY_METHOD)) {
                         config.deliveryMethod = DeliveryMethod.fromKey(json.getString(KEY_DELIVERY_METHOD));

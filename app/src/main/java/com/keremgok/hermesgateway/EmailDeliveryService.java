@@ -48,7 +48,7 @@ public class EmailDeliveryService {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
             emailIntent.setData(Uri.parse("mailto:" + toEmail));
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, fullSubject);
-            
+
             if (isHtml) {
                 emailIntent.putExtra(Intent.EXTRA_TEXT, android.text.Html.fromHtml(emailBody));
             } else {
@@ -86,7 +86,7 @@ public class EmailDeliveryService {
      */
     public String createEmailFromActivityData(String eventType, JSONObject activityData) {
         StringBuilder emailBody = new StringBuilder();
-        
+
         try {
             // Email header
             emailBody.append("<h2>Activity Gateway Notification</h2>\n");
@@ -130,22 +130,23 @@ public class EmailDeliveryService {
      */
     private void createSmsEmailContent(StringBuilder emailBody, JSONObject data) throws JSONException {
         emailBody.append("<h3>📱 SMS Message Received</h3>\n");
-        
+
         if (data.has("from")) {
             emailBody.append("<p><strong>From:</strong> ").append(data.getString("from")).append("</p>\n");
         }
-        
+
         if (data.has("text")) {
             emailBody.append("<p><strong>Message:</strong></p>\n");
             emailBody.append("<blockquote>").append(escapeHtml(data.getString("text"))).append("</blockquote>\n");
         }
-        
+
         if (data.has("sim")) {
             emailBody.append("<p><strong>SIM:</strong> ").append(data.getString("sim")).append("</p>\n");
         }
-        
+
         if (data.has("sentStamp")) {
-            emailBody.append("<p><strong>Sent:</strong> ").append(formatTimestamp(data.getString("sentStamp"))).append("</p>\n");
+            emailBody.append("<p><strong>Sent:</strong> ").append(formatTimestamp(data.getString("sentStamp")))
+                    .append("</p>\n");
         }
     }
 
@@ -154,24 +155,26 @@ public class EmailDeliveryService {
      */
     private void createCallEmailContent(StringBuilder emailBody, JSONObject data) throws JSONException {
         emailBody.append("<h3>📞 Incoming Call</h3>\n");
-        
+
         if (data.has("from")) {
             emailBody.append("<p><strong>From:</strong> ").append(data.getString("from")).append("</p>\n");
         }
-        
+
         if (data.has("contact")) {
             String contact = data.getString("contact");
             if (!contact.isEmpty() && !contact.equals("Unknown")) {
                 emailBody.append("<p><strong>Contact:</strong> ").append(contact).append("</p>\n");
             }
         }
-        
+
         if (data.has("duration")) {
-            emailBody.append("<p><strong>Duration:</strong> ").append(data.getString("duration")).append(" seconds</p>\n");
+            emailBody.append("<p><strong>Duration:</strong> ").append(data.getString("duration"))
+                    .append(" seconds</p>\n");
         }
-        
+
         if (data.has("timestamp")) {
-            emailBody.append("<p><strong>Time:</strong> ").append(formatTimestamp(data.getString("timestamp"))).append("</p>\n");
+            emailBody.append("<p><strong>Time:</strong> ").append(formatTimestamp(data.getString("timestamp")))
+                    .append("</p>\n");
         }
     }
 
@@ -180,22 +183,24 @@ public class EmailDeliveryService {
      */
     private void createPushEmailContent(StringBuilder emailBody, JSONObject data) throws JSONException {
         emailBody.append("<h3>🔔 Push Notification</h3>\n");
-        
+
         if (data.has("package")) {
             emailBody.append("<p><strong>App:</strong> ").append(data.getString("package")).append("</p>\n");
         }
-        
+
         if (data.has("title")) {
-            emailBody.append("<p><strong>Title:</strong> ").append(escapeHtml(data.getString("title"))).append("</p>\n");
+            emailBody.append("<p><strong>Title:</strong> ").append(escapeHtml(data.getString("title")))
+                    .append("</p>\n");
         }
-        
+
         if (data.has("content")) {
             emailBody.append("<p><strong>Content:</strong></p>\n");
             emailBody.append("<blockquote>").append(escapeHtml(data.getString("content"))).append("</blockquote>\n");
         }
-        
+
         if (data.has("sentStamp")) {
-            emailBody.append("<p><strong>Time:</strong> ").append(formatTimestamp(data.getString("sentStamp"))).append("</p>\n");
+            emailBody.append("<p><strong>Time:</strong> ").append(formatTimestamp(data.getString("sentStamp")))
+                    .append("</p>\n");
         }
     }
 
@@ -215,8 +220,9 @@ public class EmailDeliveryService {
      * Format message for email delivery
      */
     private String formatMessageForEmail(String message, boolean isHtml) {
-        if (message == null) return "";
-        
+        if (message == null)
+            return "";
+
         if (isHtml) {
             return message; // Assume it's already properly formatted HTML
         } else {
@@ -229,8 +235,9 @@ public class EmailDeliveryService {
      * Escape HTML characters
      */
     private String escapeHtml(String text) {
-        if (text == null) return "";
-        
+        if (text == null)
+            return "";
+
         return text
                 .replace("&", "&amp;")
                 .replace("<", "&lt;")
@@ -267,7 +274,7 @@ public class EmailDeliveryService {
         if (email == null || email.trim().isEmpty()) {
             return false;
         }
-        
+
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches();
     }
 
@@ -301,12 +308,12 @@ public class EmailDeliveryService {
      * Get suggested email apps
      */
     public static String[] getSuggestedEmailApps() {
-        return new String[]{
-            "Gmail",
-            "Outlook", 
-            "Yahoo Mail",
-            "ProtonMail",
-            "System Email Client"
+        return new String[] {
+                "Gmail",
+                "Outlook",
+                "Yahoo Mail",
+                "ProtonMail",
+                "System Email Client"
         };
     }
-} 
+}

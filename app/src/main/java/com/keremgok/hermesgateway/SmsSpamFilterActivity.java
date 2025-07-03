@@ -36,10 +36,10 @@ public class SmsSpamFilterActivity extends AppCompatActivity {
 
         // Initialize views
         initializeViews();
-        
+
         // Load current settings
         loadSettings();
-        
+
         // Set up listeners
         setupListeners();
     }
@@ -137,7 +137,8 @@ public class SmsSpamFilterActivity extends AppCompatActivity {
     private void loadDefaultKeywords() {
         new AlertDialog.Builder(this)
                 .setTitle("Varsayılan Kelimeler")
-                .setMessage("Varsayılan spam kelimelerini yüklemek istediğinize emin misiniz? Bu işlem mevcut kelimelerinizin üzerine yazacaktır.")
+                .setMessage(
+                        "Varsayılan spam kelimelerini yüklemek istediğinize emin misiniz? Bu işlem mevcut kelimelerinizin üzerine yazacaktır.")
                 .setPositiveButton("Evet", (dialog, which) -> {
                     spamFilter.loadDefaultKeywords();
                     editTextKeywords.setText(spamFilter.getKeywordsAsString());
@@ -177,7 +178,7 @@ public class SmsSpamFilterActivity extends AppCompatActivity {
                     if (!TextUtils.isEmpty(testMessage)) {
                         boolean isSpam = spamFilter.isSpam(testMessage);
                         String result = isSpam ? "SPAM" : "NORMAL";
-                        
+
                         new AlertDialog.Builder(this)
                                 .setTitle("Test Sonucu")
                                 .setMessage("Mesaj: \"" + testMessage + "\"\n\nSonuç: " + result)

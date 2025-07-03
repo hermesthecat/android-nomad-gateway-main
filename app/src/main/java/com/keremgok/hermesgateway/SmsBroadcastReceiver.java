@@ -59,7 +59,8 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
         // Spam filtresi kontrolü
         SmsSpamFilter spamFilter = new SmsSpamFilter(context);
         if (spamFilter.isSpam(content.toString())) {
-            android.util.Log.d("SmsBroadcastReceiver", "SMS spam olarak algılandı ve işlenmeyecek: " + content.toString());
+            android.util.Log.d("SmsBroadcastReceiver",
+                    "SMS spam olarak algılandı ve işlenmeyecek: " + content.toString());
             return; // Spam mesajını işleme alma
         }
 
@@ -112,21 +113,21 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             messageData.put("timestamp", timeStamp);
             messageData.put("sentStamp", timeStamp);
             messageData.put("receivedStamp", System.currentTimeMillis());
-            
+
             // Use DeliveryRouter to handle all delivery methods
             DeliveryRouter router = new DeliveryRouter(context);
             router.routeDelivery(config, "sms_received", messageData);
-            
+
         } catch (Exception e) {
             android.util.Log.e("SmsBroadcastReceiver", "Error routing SMS delivery", e);
-            
+
             // Fallback to original webhook method for HTTP POST only
             if (config.getDeliveryMethod() == DeliveryMethod.HTTP_POST) {
                 callWebHookFallback(config, sender, slotName, content, timeStamp);
             }
         }
     }
-    
+
     // Fallback method for HTTP POST delivery
     private void callWebHookFallback(ForwardingConfig config, String sender, String slotName,
             String content, long timeStamp) {

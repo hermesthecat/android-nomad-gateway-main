@@ -3,15 +3,15 @@
     <cloud-backup>
         <!-- Include app preferences -->
         <include domain="sharedpref" path="." />
-        
+
         <!-- Exclude sensitive data -->
         <exclude domain="sharedpref" path="phones" />
     </cloud-backup>
-    
+
     <device-transfer>
         <!-- Include app preferences for device transfer -->
         <include domain="sharedpref" path="." />
-        
+
         <!-- Exclude sensitive data from device transfer -->
         <exclude domain="sharedpref" path="phones" />
     </device-transfer>

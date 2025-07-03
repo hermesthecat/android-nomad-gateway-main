@@ -107,7 +107,7 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
     private MaterialSwitch includeSimInfoSwitch;
     private MaterialSwitch includeNetworkInfoSwitch;
     private MaterialSwitch includeAppConfigSwitch;
-    
+
     // Delivery method configuration
     private ChipGroup deliveryMethodChipGroup;
     private Chip chipDeliveryHttp;
@@ -266,7 +266,7 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
         includeSimInfoSwitch = findViewById(R.id.switch_include_sim_info);
         includeNetworkInfoSwitch = findViewById(R.id.switch_include_network_info);
         includeAppConfigSwitch = findViewById(R.id.switch_include_app_config);
-        
+
         // Delivery method configuration
         deliveryMethodChipGroup = findViewById(R.id.delivery_method_chip_group);
         chipDeliveryHttp = findViewById(R.id.chip_delivery_http);
@@ -287,7 +287,7 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
 
         // Setup enhanced data handling
         setupEnhancedDataHandling();
-        
+
         // Setup delivery method handling
         setupDeliveryMethodHandling();
     }
@@ -440,7 +440,7 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
         includeSimInfoSwitch.setChecked(config.isIncludeSimInfo());
         includeNetworkInfoSwitch.setChecked(config.isIncludeNetworkInfo());
         includeAppConfigSwitch.setChecked(config.isIncludeAppConfig());
-        
+
         // Load delivery method configuration
         setDeliveryMethodFromConfig();
     }
@@ -744,13 +744,13 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
         config.setIncludeSimInfo(includeSimInfoSwitch.isChecked());
         config.setIncludeNetworkInfo(includeNetworkInfoSwitch.isChecked());
         config.setIncludeAppConfig(includeAppConfigSwitch.isChecked());
-        
+
         // Delivery method configuration
         config.setDeliveryMethod(getSelectedDeliveryMethod());
-        
+
         if (chipDeliverySms.isChecked()) {
             config.setSmsPhoneNumber(smsPhoneInput.getText().toString().trim());
-            
+
             // Set SIM slot based on dropdown selection
             String selectedSim = simCardDropdown.getText().toString();
             List<String> simSlots = SmsDeliveryService.getAvailableSimSlots(this);
@@ -763,7 +763,7 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
             }
             config.setSimSlot(simSlot);
         }
-        
+
         if (chipDeliveryEmail.isChecked()) {
             config.setEmailAddress(emailInput.getText().toString().trim());
         }
@@ -1394,11 +1394,11 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
             }
         });
     }
-    
+
     private void setupDeliveryMethodHandling() {
         // Load SIM card options
         loadSimCardOptions();
-        
+
         // Setup delivery method chip selection
         deliveryMethodChipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (!checkedIds.isEmpty()) {
@@ -1406,29 +1406,29 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
                 updateDeliveryMethodUI(checkedId);
             }
         });
-        
+
         // Set initial state
         updateDeliveryMethodUI(chipDeliveryHttp.getId());
     }
-    
+
     private void loadSimCardOptions() {
         List<String> simSlots = SmsDeliveryService.getAvailableSimSlots(this);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, simSlots);
         simCardDropdown.setAdapter(adapter);
-        
+
         // Set default selection
         if (!simSlots.isEmpty()) {
             simCardDropdown.setText(simSlots.get(0), false);
         }
     }
-    
+
     private void updateDeliveryMethodUI(int selectedChipId) {
         // Hide all configuration containers first
         httpConfigContainer.setVisibility(View.GONE);
         smsConfigContainer.setVisibility(View.GONE);
         emailConfigContainer.setVisibility(View.GONE);
-        
+
         // Show the appropriate configuration container
         if (selectedChipId == R.id.chip_delivery_http) {
             httpConfigContainer.setVisibility(View.VISIBLE);
@@ -1438,10 +1438,10 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
             emailConfigContainer.setVisibility(View.VISIBLE);
         }
     }
-    
+
     private void setDeliveryMethodFromConfig() {
         DeliveryMethod method = config.getDeliveryMethod();
-        
+
         // Select the appropriate chip
         switch (method) {
             case HTTP_POST:
@@ -1454,38 +1454,44 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
                 chipDeliveryEmail.setChecked(true);
                 break;
         }
-        
+
         // Load method-specific configuration
         if (config.getSmsPhoneNumber() != null) {
             smsPhoneInput.setText(config.getSmsPhoneNumber());
         }
-        
+
         if (config.getEmailAddress() != null) {
             emailInput.setText(config.getEmailAddress());
         }
-        
+
         // Set SIM slot if available
         int simSlot = config.getSimSlot();
         List<String> simSlots = SmsDeliveryService.getAvailableSimSlots(this);
         if (simSlot > 0 && simSlot <= simSlots.size()) {
             simCardDropdown.setText(simSlots.get(simSlot - 1), false);
         }
-        
+
         // Update UI to show the correct configuration container
         updateDeliveryMethodUI(getSelectedDeliveryMethodChipId());
     }
-    
+
     private int getSelectedDeliveryMethodChipId() {
-        if (chipDeliveryHttp.isChecked()) return R.id.chip_delivery_http;
-        if (chipDeliverySms.isChecked()) return R.id.chip_delivery_sms;
-        if (chipDeliveryEmail.isChecked()) return R.id.chip_delivery_email;
+        if (chipDeliveryHttp.isChecked())
+            return R.id.chip_delivery_http;
+        if (chipDeliverySms.isChecked())
+            return R.id.chip_delivery_sms;
+        if (chipDeliveryEmail.isChecked())
+            return R.id.chip_delivery_email;
         return R.id.chip_delivery_http; // default
     }
-    
+
     private DeliveryMethod getSelectedDeliveryMethod() {
-        if (chipDeliveryHttp.isChecked()) return DeliveryMethod.HTTP_POST;
-        if (chipDeliverySms.isChecked()) return DeliveryMethod.SMS;
-        if (chipDeliveryEmail.isChecked()) return DeliveryMethod.EMAIL;
+        if (chipDeliveryHttp.isChecked())
+            return DeliveryMethod.HTTP_POST;
+        if (chipDeliverySms.isChecked())
+            return DeliveryMethod.SMS;
+        if (chipDeliveryEmail.isChecked())
+            return DeliveryMethod.EMAIL;
         return DeliveryMethod.HTTP_POST; // default
     }
 }

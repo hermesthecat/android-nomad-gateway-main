@@ -14,7 +14,7 @@ public class RequestWorker extends Worker {
     public final static String DATA_IGNORE_SSL = "IGNORE_SSL";
     public final static String DATA_MAX_RETRIES = "MAX_RETRIES";
     public final static String DATA_CHUNKED_MODE = "CHUNKED_MODE";
-    
+
     private final DeliveryStatistics statistics;
 
     public RequestWorker(

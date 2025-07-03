@@ -165,23 +165,24 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
             messageData.put("contact", contactName != null ? contactName : "Unknown");
             messageData.put("sim", simName);
             messageData.put("timestamp", System.currentTimeMillis());
-            
+
             // Use DeliveryRouter to handle all delivery methods
             DeliveryRouter router = new DeliveryRouter(context);
             router.routeDelivery(config, "call_received", messageData);
-            
+
         } catch (Exception e) {
             Log.e(TAG, "Error routing call delivery", e);
-            
+
             // Fallback to original webhook method for HTTP POST only
             if (config.getDeliveryMethod() == DeliveryMethod.HTTP_POST) {
                 sendCallWebhookFallback(config, phoneNumber, contactName, simName);
             }
         }
     }
-    
+
     // Fallback method for HTTP POST delivery
-    private void sendCallWebhookFallback(ForwardingConfig config, String phoneNumber, String contactName, String simName) {
+    private void sendCallWebhookFallback(ForwardingConfig config, String phoneNumber, String contactName,
+            String simName) {
         Data inputData = new Data.Builder()
                 .putString("config_key", config.getKey())
                 .putString("phone_number", phoneNumber)

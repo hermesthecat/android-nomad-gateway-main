@@ -50,19 +50,19 @@ public class DeliveryRouter {
         }
 
         DeliveryMethod deliveryMethod = config.getDeliveryMethod();
-        
+
         Log.d(TAG, "Routing delivery via " + deliveryMethod.getDisplayName() + " for event: " + eventType);
 
         switch (deliveryMethod) {
             case HTTP_POST:
                 return routeHttpDelivery(config, messageData);
-                
+
             case SMS:
                 return routeSmsDelivery(config, eventType, messageData);
-                
+
             case EMAIL:
                 return routeEmailDelivery(config, eventType, messageData);
-                
+
             default:
                 Log.e(TAG, "Unknown delivery method: " + deliveryMethod);
                 return false;
@@ -75,11 +75,10 @@ public class DeliveryRouter {
     private boolean routeHttpDelivery(ForwardingConfig config, JSONObject messageData) {
         try {
             String message = config.prepareEnhancedMessage(
-                messageData.optString("from", ""),
-                messageData.optString("text", messageData.toString()),
-                messageData.optString("sim", "unknown"),
-                messageData.optLong("timestamp", System.currentTimeMillis())
-            );
+                    messageData.optString("from", ""),
+                    messageData.optString("text", messageData.toString()),
+                    messageData.optString("sim", "unknown"),
+                    messageData.optLong("timestamp", System.currentTimeMillis()));
 
             Constraints constraints = new Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -104,7 +103,7 @@ public class DeliveryRouter {
                     .build();
 
             WorkManager.getInstance(context).enqueue(workRequest);
-            
+
             Log.d(TAG, "HTTP POST delivery queued successfully");
             // Note: Webhook success/failure will be tracked by RequestWorker
             return true;
@@ -128,13 +127,13 @@ public class DeliveryRouter {
 
             // Create SMS-friendly message
             String smsMessage = createSmsMessage(eventType, messageData);
-            
+
             // Use configured SIM slot or default
             int simSlot = config.getSimSlot();
-            
+
             // Send SMS using the service
             boolean success = smsService.sendSms(phoneNumber, smsMessage, simSlot);
-            
+
             if (success) {
                 Log.d(TAG, "SMS delivery completed successfully");
                 statistics.recordSmsSuccess();
@@ -142,7 +141,7 @@ public class DeliveryRouter {
                 Log.e(TAG, "SMS delivery failed");
                 statistics.recordSmsFailure();
             }
-            
+
             return success;
 
         } catch (Exception e) {
@@ -169,7 +168,7 @@ public class DeliveryRouter {
             return false;
         }
     }
-    
+
     /**
      * Route SMTP email delivery (automatic sending)
      */
@@ -177,7 +176,7 @@ public class DeliveryRouter {
         try {
             String subject = createEmailSubject(eventType, messageData);
             String htmlContent = smtpEmailService.createHtmlEmailFromActivityData(eventType, messageData);
-            
+
             // Send email asynchronously using SMTP
             smtpEmailService.sendEmailAsync(config, subject, htmlContent, new SmtpEmailDeliveryService.EmailCallback() {
                 @Override
@@ -185,23 +184,23 @@ public class DeliveryRouter {
                     Log.d(TAG, "SMTP email sent successfully. Message ID: " + messageId);
                     statistics.recordEmailSuccess();
                 }
-                
+
                 @Override
                 public void onError(String error) {
                     Log.e(TAG, "SMTP email delivery failed: " + error);
                     statistics.recordEmailFailure();
                 }
             });
-            
+
             Log.d(TAG, "SMTP email delivery initiated successfully");
             return true;
-            
+
         } catch (Exception e) {
             Log.e(TAG, "Failed to route SMTP email delivery", e);
             return false;
         }
     }
-    
+
     /**
      * Route system email delivery (fallback - opens email client)
      */
@@ -216,10 +215,10 @@ public class DeliveryRouter {
             // Create email subject and content
             String subject = createEmailSubject(eventType, messageData);
             String emailContent = emailService.createEmailFromActivityData(eventType, messageData);
-            
+
             // Send email using system email client
             boolean success = emailService.sendEmail(emailAddress, subject, emailContent, true);
-            
+
             if (success) {
                 Log.d(TAG, "System email delivery initiated successfully");
                 statistics.recordEmailSuccess();
@@ -227,7 +226,7 @@ public class DeliveryRouter {
                 Log.e(TAG, "System email delivery failed");
                 statistics.recordEmailFailure();
             }
-            
+
             return success;
 
         } catch (Exception e) {
@@ -241,7 +240,7 @@ public class DeliveryRouter {
      */
     private String createSmsMessage(String eventType, JSONObject messageData) {
         StringBuilder smsContent = new StringBuilder();
-        
+
         try {
             switch (eventType.toLowerCase()) {
                 case "sms":
@@ -252,7 +251,7 @@ public class DeliveryRouter {
                         smsContent.append(": ").append(text);
                     }
                     break;
-                    
+
                 case "call":
                 case "call_received":
                     smsContent.append("Call from ").append(messageData.optString("from", "Unknown"));
@@ -261,13 +260,13 @@ public class DeliveryRouter {
                         smsContent.append(" (").append(contact).append(")");
                     }
                     break;
-                    
+
                 case "push":
                 case "push_notification_received":
                     String appPackage = messageData.optString("package", "Unknown App");
                     String title = messageData.optString("title", "");
                     String content = messageData.optString("content", "");
-                    
+
                     smsContent.append("Notification from ").append(appPackage);
                     if (!title.isEmpty()) {
                         smsContent.append(": ").append(title);
@@ -276,7 +275,7 @@ public class DeliveryRouter {
                         smsContent.append(" - ").append(content);
                     }
                     break;
-                    
+
                 default:
                     smsContent.append("Activity: ").append(eventType);
                     break;
@@ -286,7 +285,7 @@ public class DeliveryRouter {
             smsContent.setLength(0);
             smsContent.append("Activity notification: ").append(eventType);
         }
-        
+
         return smsContent.toString();
     }
 
@@ -299,7 +298,7 @@ public class DeliveryRouter {
                 case "sms":
                 case "sms_received":
                     return "SMS from " + messageData.optString("from", "Unknown");
-                    
+
                 case "call":
                 case "call_received":
                     String contact = messageData.optString("contact", "");
@@ -309,7 +308,7 @@ public class DeliveryRouter {
                     } else {
                         return "Call from " + from;
                     }
-                    
+
                 case "push":
                 case "push_notification_received":
                     String title = messageData.optString("title", "");
@@ -319,7 +318,7 @@ public class DeliveryRouter {
                     } else {
                         return "Notification from " + appPackage;
                     }
-                    
+
                 default:
                     return "Activity: " + eventType;
             }
@@ -336,19 +335,19 @@ public class DeliveryRouter {
         switch (method) {
             case HTTP_POST:
                 return config.getUrl() != null && !config.getUrl().trim().isEmpty();
-                
+
             case SMS:
-                return SmsDeliveryService.isAvailable(context) 
-                    && config.getSmsPhoneNumber() != null 
-                    && !config.getSmsPhoneNumber().trim().isEmpty()
-                    && SmsDeliveryService.isValidPhoneNumber(config.getSmsPhoneNumber());
-                
+                return SmsDeliveryService.isAvailable(context)
+                        && config.getSmsPhoneNumber() != null
+                        && !config.getSmsPhoneNumber().trim().isEmpty()
+                        && SmsDeliveryService.isValidPhoneNumber(config.getSmsPhoneNumber());
+
             case EMAIL:
                 return EmailDeliveryService.isAvailable(context)
-                    && config.getEmailAddress() != null
-                    && !config.getEmailAddress().trim().isEmpty()
-                    && EmailDeliveryService.isValidEmail(config.getEmailAddress());
-                    
+                        && config.getEmailAddress() != null
+                        && !config.getEmailAddress().trim().isEmpty()
+                        && EmailDeliveryService.isValidEmail(config.getEmailAddress());
+
             default:
                 return false;
         }
@@ -361,13 +360,13 @@ public class DeliveryRouter {
         switch (method) {
             case HTTP_POST:
                 return "Requires: Webhook URL, Internet connection";
-                
+
             case SMS:
                 return "Requires: Phone number, SMS permission, SIM card";
-                
+
             case EMAIL:
                 return "Requires: Email address, Email app installed";
-                
+
             default:
                 return "Unknown requirements";
         }

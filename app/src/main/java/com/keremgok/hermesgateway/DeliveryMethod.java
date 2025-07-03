@@ -117,4 +117,4 @@ public enum DeliveryMethod {
                 return R.drawable.ic_link;
         }
     }
-} 
+}
