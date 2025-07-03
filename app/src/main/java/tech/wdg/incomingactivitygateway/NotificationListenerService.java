@@ -128,35 +128,22 @@ public class NotificationListenerService extends android.service.notification.No
             String fullMessage) {
         long timeStamp = System.currentTimeMillis();
 
-        String message;
-        if (config.getForwardingType() == ForwardingConfig.ForwardingType.SMS) {
-            // For SMS forwarding, create a simple text message
-            message = "Notification from " + packageName + ":\n" + fullMessage;
-        } else {
-            // For webhooks, use the configured template
-            message = config.prepareEnhancedNotificationMessage(packageName, title, content, fullMessage, timeStamp);
-        }
+        // Use enhanced message preparation if enabled, otherwise use regular template
+        String message = config.prepareEnhancedNotificationMessage(packageName, title, content, fullMessage, timeStamp);
 
         // Create work request for sending webhook
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build();
 
-        Data.Builder dataBuilder = new Data.Builder()
+        Data data = new Data.Builder()
+                .putString(RequestWorker.DATA_URL, config.getUrl())
                 .putString(RequestWorker.DATA_TEXT, message)
+                .putString(RequestWorker.DATA_HEADERS, config.getHeaders())
                 .putBoolean(RequestWorker.DATA_IGNORE_SSL, config.getIgnoreSsl())
                 .putBoolean(RequestWorker.DATA_CHUNKED_MODE, config.getChunkedMode())
                 .putInt(RequestWorker.DATA_MAX_RETRIES, config.getRetriesNumber())
-                .putString(RequestWorker.DATA_FORWARDING_TYPE, config.getForwardingType().getValue());
-
-        if (config.getForwardingType() == ForwardingConfig.ForwardingType.SMS) {
-            dataBuilder.putString(RequestWorker.DATA_FORWARDING_NUMBER, config.getForwardingNumber());
-        } else {
-            dataBuilder.putString(RequestWorker.DATA_URL, config.getUrl());
-            dataBuilder.putString(RequestWorker.DATA_HEADERS, config.getHeaders());
-        }
-
-        Data data = dataBuilder.build();
+                .build();
 
         WorkRequest workRequest = new OneTimeWorkRequest.Builder(RequestWorker.class)
                 .setConstraints(constraints)

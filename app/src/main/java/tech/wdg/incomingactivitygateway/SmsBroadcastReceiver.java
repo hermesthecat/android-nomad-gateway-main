@@ -96,34 +96,21 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
     protected void callWebHook(ForwardingConfig config, String sender, String slotName,
             String content, long timeStamp) {
 
-        String message;
-        if (config.getForwardingType() == ForwardingConfig.ForwardingType.SMS) {
-            // For SMS forwarding, create a simple text message
-            message = "From: " + sender + "\n" + content;
-        } else {
-            // For webhooks, use the configured template
-            message = config.prepareEnhancedMessage(sender, content, slotName, timeStamp);
-        }
+        // Use enhanced message preparation if enabled, otherwise use regular template
+        String message = config.prepareEnhancedMessage(sender, content, slotName, timeStamp);
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build();
 
-        Data.Builder dataBuilder = new Data.Builder()
+        Data data = new Data.Builder()
+                .putString(RequestWorker.DATA_URL, config.getUrl())
                 .putString(RequestWorker.DATA_TEXT, message)
+                .putString(RequestWorker.DATA_HEADERS, config.getHeaders())
                 .putBoolean(RequestWorker.DATA_IGNORE_SSL, config.getIgnoreSsl())
                 .putBoolean(RequestWorker.DATA_CHUNKED_MODE, config.getChunkedMode())
                 .putInt(RequestWorker.DATA_MAX_RETRIES, config.getRetriesNumber())
-                .putString(RequestWorker.DATA_FORWARDING_TYPE, config.getForwardingType().getValue());
-
-        if (config.getForwardingType() == ForwardingConfig.ForwardingType.SMS) {
-            dataBuilder.putString(RequestWorker.DATA_FORWARDING_NUMBER, config.getForwardingNumber());
-        } else {
-            dataBuilder.putString(RequestWorker.DATA_URL, config.getUrl());
-            dataBuilder.putString(RequestWorker.DATA_HEADERS, config.getHeaders());
-        }
-
-        Data data = dataBuilder.build();
+                .build();
 
         WorkRequest workRequest = new OneTimeWorkRequest.Builder(RequestWorker.class)
                 .setConstraints(constraints)
@@ -137,6 +124,7 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
         WorkManager
                 .getInstance(this.context)
                 .enqueue(workRequest);
+
     }
 
     private int detectSim(Bundle bundle) {
