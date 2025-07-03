@@ -9,6 +9,13 @@ This is a free, open-source Android app that automatically forwards incoming SMS
 
 > **Note**: This project was formerly known as "Android Nomad Gateway" and has been rebranded to "Hermes Gateway" with package name `com.keremgok.hermesgateway`.
 
+## What's New in v1.6.x
+
+- **Home Screen Widget**: Real-time delivery statistics on your home screen
+- **Improved CI/CD Workflows**: Fixed keystore configuration issues in CI builds
+- **Comprehensive Statistics Dashboard**: Track success rates for webhook, SMS, and emails
+- **Modern Material Design**: Updated UI with accessible features and seamless integration
+
 ## Features
 
 - **SMS Forwarding**: Forward SMS from specific numbers or all senders
