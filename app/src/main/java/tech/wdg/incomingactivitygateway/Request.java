@@ -89,7 +89,7 @@ public class Request {
         this.useChunkedMode = useChunkedMode;
     }
 
-    @SuppressLint({"AllowAllHostnameVerifier"})
+    @SuppressLint({ "AllowAllHostnameVerifier" })
     public String execute() {
         if (this.error != null) {
             return this.error;
@@ -100,8 +100,7 @@ public class Request {
         try {
             if (this.connection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) this.connection).setSSLSocketFactory(
-                        new TLSSocketFactory(this.ignoreSsl)
-                );
+                        new TLSSocketFactory(this.ignoreSsl));
 
                 if (this.ignoreSsl) {
                     ((HttpsURLConnection) this.connection).setHostnameVerifier(new AllowAllHostnameVerifier());

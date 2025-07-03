@@ -36,8 +36,7 @@ public class SmsReceiverTest {
                         Mockito.anyString(),
                         Mockito.anyString(),
                         Mockito.anyString(),
-                        Mockito.anyLong()
-                );
+                        Mockito.anyLong());
     }
 
     @Test
@@ -52,8 +51,7 @@ public class SmsReceiverTest {
                         Mockito.anyString(),
                         Mockito.anyString(),
                         Mockito.anyString(),
-                        Mockito.anyLong()
-                );
+                        Mockito.anyLong());
     }
 
     @Test
@@ -68,8 +66,7 @@ public class SmsReceiverTest {
                         Mockito.anyString(),
                         Mockito.anyString(),
                         Mockito.anyString(),
-                        Mockito.anyLong()
-                );
+                        Mockito.anyLong());
     }
 
     @Test
@@ -84,8 +81,7 @@ public class SmsReceiverTest {
                         Mockito.anyString(),
                         Mockito.anyString(),
                         Mockito.anyString(),
-                        Mockito.anyLong()
-                );
+                        Mockito.anyLong());
     }
 
     @Test
@@ -100,8 +96,7 @@ public class SmsReceiverTest {
                         Mockito.anyString(),
                         Mockito.anyString(),
                         Mockito.anyString(),
-                        Mockito.anyLong()
-                );
+                        Mockito.anyLong());
     }
 
     private void setPhoneConfig(Context context, String phone) {
@@ -113,8 +108,7 @@ public class SmsReceiverTest {
     private SharedPreferences.Editor getEditor() {
         SharedPreferences sharedPref = appContext.getSharedPreferences(
                 appContext.getString(R.string.key_phones_preference),
-                Context.MODE_PRIVATE
-        );
+                Context.MODE_PRIVATE);
         return sharedPref.edit();
     }
 
@@ -140,8 +134,7 @@ public class SmsReceiverTest {
                         Mockito.anyString(),
                         Mockito.anyString(),
                         Mockito.anyString(),
-                        Mockito.anyLong()
-                );
+                        Mockito.anyLong());
 
         return receiver;
     }
