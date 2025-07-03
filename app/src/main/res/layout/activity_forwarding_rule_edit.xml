@@ -1,0 +1,1376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ForwardingRuleEditActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Edit Forwarding Rule"
+            app:titleTextColor="?attr/colorOnSurface" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="120dp">
+
+            <!-- Basic Configuration Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="3dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Section Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardBackgroundColor="?attr/colorPrimaryContainer"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_settings"
+                                android:tint="?attr/colorOnPrimaryContainer" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:text="Basic Configuration"
+                            android:textAppearance="@style/TextAppearance.App.TitleLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            android:letterSpacing="0" />
+
+                    </LinearLayout>
+
+                    <!-- Activity Type Selection -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Activity Type"
+                            android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            android:layout_marginBottom="8dp" />
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/activity_type_chip_group"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:singleSelection="true"
+                            app:selectionRequired="true">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_type_sms"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SMS"
+                                app:chipIcon="@drawable/ic_sms"
+                                android:checked="true"
+                                style="@style/Widget.Material3.Chip.Filter" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_type_push"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Push"
+                                app:chipIcon="@drawable/ic_notifications"
+                                style="@style/Widget.Material3.Chip.Filter" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_type_call"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Calls"
+                                app:chipIcon="@drawable/ic_call"
+                                style="@style/Widget.Material3.Chip.Filter" />
+
+                        </com.google.android.material.chip.ChipGroup>
+
+                    </LinearLayout>
+
+                    <!-- All Sources Switch -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switch_all_sources"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Forward from all sources"
+                            android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                            android:paddingVertical="12dp"
+                            android:checked="true" />
+
+                    </LinearLayout>
+
+                    <!-- Source Filtering Container -->
+                    <LinearLayout
+                        android:id="@+id/source_filtering_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- App Selector for Push Notifications -->
+                        <LinearLayout
+                            android:id="@+id/app_selector_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="20dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Select App"
+                                android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                android:layout_marginBottom="8dp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                                android:hint="Choose an app"
+                                app:boxCornerRadiusTopStart="12dp"
+                                app:boxCornerRadiusTopEnd="12dp"
+                                app:boxCornerRadiusBottomStart="12dp"
+                                app:boxCornerRadiusBottomEnd="12dp">
+
+                                <AutoCompleteTextView
+                                    android:id="@+id/app_selector_dropdown"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="none" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <!-- SMS Phone Number Field -->
+                        <LinearLayout
+                            android:id="@+id/sms_phone_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="16dp"
+                            android:visibility="visible">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Phone Numbers to Monitor"
+                                    android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                    android:textColor="?attr/colorOnSurface" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_add_sms_phone_number"
+                                    style="@style/Widget.Material3.Button.TextButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Add Number"
+                                    app:icon="@drawable/ic_add"
+                                    android:textColor="?attr/colorPrimary" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/sms_phone_numbers_list_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical" />
+
+                        </LinearLayout>
+
+                        <!-- Phone Numbers for Call Filtering -->
+                        <LinearLayout
+                            android:id="@+id/call_phone_numbers_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="16dp"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Phone Numbers to Monitor"
+                                    android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                    android:textColor="?attr/colorOnSurface" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_add_phone_number"
+                                    style="@style/Widget.Material3.Button.TextButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Add Number"
+                                    app:icon="@drawable/ic_add"
+                                    android:textColor="?attr/colorPrimary" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/phone_numbers_list_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:hint="Webhook URL"
+                        app:startIconDrawable="@drawable/ic_link"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/input_url"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textUri" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:hint="Number of Retries"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/input_retries"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:text="3" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- JSON Template Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.App.CardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_medium">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="JSON Template Configuration"
+                        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="@dimen/spacing_small" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Configure your JSON payload structure. Use template variables in values:"
+                        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="@dimen/spacing_small" />
+
+                    <!-- Template Variables Info -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_medium"
+                        app:cardBackgroundColor="?attr/colorPrimaryContainer"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="12dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="?attr/colorPrimary">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <!-- Expandable Header -->
+                            <LinearLayout
+                                android:id="@+id/template_variables_header"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="16dp"
+                                android:gravity="center_vertical"
+                                android:background="?attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:minHeight="56dp">
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/ic_code"
+                                    android:tint="?attr/colorPrimary"
+                                    android:layout_marginEnd="12dp" />
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Template Variables"
+                                        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+                                        android:textColor="?attr/colorOnPrimaryContainer"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Tap to view available variables"
+                                        android:textAppearance="@style/TextAppearance.App.BodySmall"
+                                        android:textColor="?attr/colorOnPrimaryContainer"
+                                        android:alpha="0.8"
+                                        android:layout_marginTop="2dp" />
+
+                                </LinearLayout>
+
+                                <ImageView
+                                    android:id="@+id/template_variables_expand_icon"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/ic_expand_more"
+                                    android:tint="?attr/colorPrimary" />
+
+                            </LinearLayout>
+
+                            <!-- Expandable Content -->
+                            <LinearLayout
+                                android:id="@+id/template_variables_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp"
+                                android:paddingTop="0dp"
+                                android:visibility="gone"
+                                android:background="?attr/colorPrimaryContainer">
+
+                                <!-- Divider -->
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:background="?attr/colorPrimary"
+                                    android:alpha="0.2"
+                                    android:layout_marginBottom="16dp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Available Variables:"
+                                    android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                    android:textColor="?attr/colorOnPrimaryContainer"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="12dp" />
+
+                                <!-- SMS Variables -->
+                                <LinearLayout
+                                    android:id="@+id/sms_variables_section"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_marginBottom="16dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="SMS Messages:"
+                                        android:textAppearance="@style/TextAppearance.App.LabelMedium"
+                                        android:textColor="?attr/colorOnPrimaryContainer"
+                                        android:textStyle="bold"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <com.google.android.material.chip.ChipGroup
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:chipSpacingHorizontal="8dp"
+                                        app:chipSpacingVertical="4dp">
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%from%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnSecondaryContainer"
+                                            app:chipBackgroundColor="?attr/colorSecondaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%text%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnSecondaryContainer"
+                                            app:chipBackgroundColor="?attr/colorSecondaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%sentStamp%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnSecondaryContainer"
+                                            app:chipBackgroundColor="?attr/colorSecondaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%receivedStamp%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnSecondaryContainer"
+                                            app:chipBackgroundColor="?attr/colorSecondaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%sim%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnSecondaryContainer"
+                                            app:chipBackgroundColor="?attr/colorSecondaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                    </com.google.android.material.chip.ChipGroup>
+
+                                </LinearLayout>
+
+                                <!-- Push Notifications Variables -->
+                                <LinearLayout
+                                    android:id="@+id/push_variables_section"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_marginBottom="16dp"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Push Notifications:"
+                                        android:textAppearance="@style/TextAppearance.App.LabelMedium"
+                                        android:textColor="?attr/colorOnPrimaryContainer"
+                                        android:textStyle="bold"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <com.google.android.material.chip.ChipGroup
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:chipSpacingHorizontal="8dp"
+                                        app:chipSpacingVertical="4dp">
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%package%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnTertiaryContainer"
+                                            app:chipBackgroundColor="?attr/colorTertiaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%title%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnTertiaryContainer"
+                                            app:chipBackgroundColor="?attr/colorTertiaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%content%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnTertiaryContainer"
+                                            app:chipBackgroundColor="?attr/colorTertiaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%text%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnTertiaryContainer"
+                                            app:chipBackgroundColor="?attr/colorTertiaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%sentStamp%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnTertiaryContainer"
+                                            app:chipBackgroundColor="?attr/colorTertiaryContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                    </com.google.android.material.chip.ChipGroup>
+
+                                </LinearLayout>
+
+                                <!-- Call Variables -->
+                                <LinearLayout
+                                    android:id="@+id/call_variables_section"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_marginBottom="16dp"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Phone Calls:"
+                                        android:textAppearance="@style/TextAppearance.App.LabelMedium"
+                                        android:textColor="?attr/colorOnPrimaryContainer"
+                                        android:textStyle="bold"
+                                        android:layout_marginBottom="8dp" />
+
+                                    <com.google.android.material.chip.ChipGroup
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:chipSpacingHorizontal="8dp"
+                                        app:chipSpacingVertical="4dp">
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%from%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnErrorContainer"
+                                            app:chipBackgroundColor="?attr/colorErrorContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%contact%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnErrorContainer"
+                                            app:chipBackgroundColor="?attr/colorErrorContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%timestamp%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnErrorContainer"
+                                            app:chipBackgroundColor="?attr/colorErrorContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%duration%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnErrorContainer"
+                                            app:chipBackgroundColor="?attr/colorErrorContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                        <com.google.android.material.chip.Chip
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="%sim%"
+                                            android:textSize="12sp"
+                                            android:textColor="?attr/colorOnErrorContainer"
+                                            app:chipBackgroundColor="?attr/colorErrorContainer"
+                                            app:chipCornerRadius="12dp"
+                                            app:chipMinHeight="28dp"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            style="@style/Widget.Material3.Chip.Assist" />
+
+                                    </com.google.android.material.chip.ChipGroup>
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="💡 Tap any variable to copy it to clipboard"
+                                    android:textAppearance="@style/TextAppearance.App.BodySmall"
+                                    android:textColor="?attr/colorOnPrimaryContainer"
+                                    android:alpha="0.9" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Template Fields -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- From Field -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="@dimen/spacing_small">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field name">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_from_key"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="from" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_marginStart="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field value (use %from%)">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_from_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="%from%" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <!-- Text Field -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="@dimen/spacing_small">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field name">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_text_key"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="text" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_marginStart="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field value (use %text%)">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_text_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="%text%" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <!-- Timestamp Field -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="@dimen/spacing_small">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field name">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_timestamp_key"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="sentStamp" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_marginStart="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field value (use %sentStamp%)">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_timestamp_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="%sentStamp%" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <!-- SIM Field -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="@dimen/spacing_small">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field name">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_sim_key"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="sim" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:layout_marginStart="@dimen/spacing_small"
+                                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                                android:hint="Field value (use %sim%)">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/input_template_sim_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:text="%sim%" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <!-- Add Custom Field Button -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_add_template_field"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:text="Add Custom Field"
+                            app:icon="@drawable/ic_add"
+                            android:textColor="?attr/colorPrimary" />
+
+                        <!-- Custom Template Fields Container -->
+                        <LinearLayout
+                            android:id="@+id/custom_template_fields_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="@dimen/spacing_small" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Enhanced Data Configuration Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="3dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Section Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:cardBackgroundColor="?attr/colorTertiaryContainer"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_settings"
+                                android:tint="?attr/colorOnTertiaryContainer" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:text="Enhanced Data Configuration"
+                            android:textAppearance="@style/TextAppearance.App.TitleLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            android:letterSpacing="0" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Include additional device information in webhook payloads for this rule"
+                        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="20dp" />
+
+                    <!-- Enhanced Data Master Switch -->
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_enhanced_data_enabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Enable Enhanced Data"
+                        android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:paddingVertical="12dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Enhanced Data Options Container -->
+                    <LinearLayout
+                        android:id="@+id/enhanced_data_options_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Device Information -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:padding="16dp">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Device Information"
+                                        android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Model, manufacturer, Android version"
+                                        android:textAppearance="@style/TextAppearance.App.BodySmall"
+                                        android:textColor="?attr/colorOnSurfaceVariant"
+                                        android:alpha="0.8" />
+
+                                </LinearLayout>
+
+                                <com.google.android.material.materialswitch.MaterialSwitch
+                                    android:id="@+id/switch_include_device_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- SIM Information -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:padding="16dp">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="SIM Information"
+                                        android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Operator, country, network type, dual SIM"
+                                        android:textAppearance="@style/TextAppearance.App.BodySmall"
+                                        android:textColor="?attr/colorOnSurfaceVariant"
+                                        android:alpha="0.8" />
+
+                                </LinearLayout>
+
+                                <com.google.android.material.materialswitch.MaterialSwitch
+                                    android:id="@+id/switch_include_sim_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Network Information -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:padding="16dp">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Network Information"
+                                        android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="IP addresses, WiFi details, connectivity"
+                                        android:textAppearance="@style/TextAppearance.App.BodySmall"
+                                        android:textColor="?attr/colorOnSurfaceVariant"
+                                        android:alpha="0.8" />
+
+                                </LinearLayout>
+
+                                <com.google.android.material.materialswitch.MaterialSwitch
+                                    android:id="@+id/switch_include_network_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- App Configuration -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:padding="16dp">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="App Configuration"
+                                        android:textAppearance="@style/TextAppearance.App.LabelLarge"
+                                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Service status, rules count, permissions"
+                                        android:textAppearance="@style/TextAppearance.App.BodySmall"
+                                        android:textColor="?attr/colorOnSurfaceVariant"
+                                        android:alpha="0.8" />
+
+                                </LinearLayout>
+
+                                <com.google.android.material.materialswitch.MaterialSwitch
+                                    android:id="@+id/switch_include_app_config"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Headers Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.App.CardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_medium">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/spacing_medium">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="HTTP Headers"
+                            android:textAppearance="@style/TextAppearance.App.TitleMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_add_header"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add Header"
+                            app:icon="@drawable/ic_add"
+                            android:textColor="?attr/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/headers_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Advanced Options Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.App.CardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_medium">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Advanced Options"
+                        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginBottom="@dimen/spacing_medium" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_ignore_ssl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ignore SSL Certificate Errors"
+                        android:textAppearance="@style/TextAppearance.App.BodyLarge"
+                        android:paddingVertical="@dimen/spacing_small"
+                        android:layout_marginBottom="@dimen/spacing_small" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_chunked_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Use Chunked Transfer Encoding"
+                        android:textAppearance="@style/TextAppearance.App.BodyLarge"
+                        android:paddingVertical="@dimen/spacing_small" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_medium"
+        android:background="?attr/colorSurface"
+        android:elevation="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_test"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:text="Test"
+            app:icon="@drawable/ic_settings"
+            android:textColor="?attr/colorPrimary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:text="Save"
+            app:icon="@drawable/ic_check_circle" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout> 
