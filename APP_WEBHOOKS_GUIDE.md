@@ -7,21 +7,25 @@ The App Webhooks feature allows you to receive HTTP notifications when specific 
 ## Available Webhook Events
 
 ### 1. Application Started Manually
+
 - **Event**: `app_manual_start`
 - **Triggered**: When the user opens the app by tapping the app icon
 - **Use Case**: Track when users actively engage with the app
 
 ### 2. Application Auto-Started
+
 - **Event**: `app_auto_start`
 - **Triggered**: When the app starts automatically (e.g., after device boot, service restart)
 - **Use Case**: Monitor background service reliability and auto-start functionality
 
 ### 3. SIM Network Status Changed
+
 - **Event**: `sim_status_changed`
 - **Triggered**: When the SIM card status changes (inserted, removed, ready, locked, etc.)
 - **Use Case**: Track SIM card availability and network connectivity
 
 ### 4. Enhanced Forwarding Rules
+
 - **Events**: `sms_received`, `call_received`, `push_notification_received`
 - **Triggered**: When SMS messages, calls, or push notifications are received (if enhanced data is enabled per rule)
 - **Use Case**: Get comprehensive device and network information with each forwarded message
@@ -31,9 +35,11 @@ The App Webhooks feature allows you to receive HTTP notifications when specific 
 The app provides two levels of enhanced data configuration:
 
 ### 1. App Webhooks (Global Settings)
+
 Configure enhanced data for dedicated app webhook events (app start, SIM status changes) in Settings → App Webhooks.
 
 ### 2. Per-Rule Enhanced Data (Individual Forwarding Rules)
+
 Each forwarding rule can have its own enhanced data configuration, providing granular control over what information to include with each specific webhook.
 
 ## Per-Rule Enhanced Data Configuration
@@ -59,6 +65,7 @@ When creating or editing a forwarding rule, you can configure enhanced data opti
 ## Configuration
 
 ### App Webhooks Configuration
+
 1. Open the Android Nomad Gateway app
 2. Go to **Settings** (gear icon in the top right)
 3. Tap **App Webhooks**
@@ -73,6 +80,7 @@ When creating or editing a forwarding rule, you can configure enhanced data opti
 6. Tap **Save** to apply changes
 
 ### Per-Rule Enhanced Data Configuration
+
 1. Open the Android Nomad Gateway app
 2. Go to **Main Screen** and tap **+** to add a new rule or edit an existing rule
 3. Configure basic rule settings (activity type, sources, webhook URL)
@@ -91,23 +99,27 @@ When creating or editing a forwarding rule, you can configure enhanced data opti
 The app now includes comprehensive device information in webhook payloads:
 
 ### Device Information
+
 - Device model, manufacturer, brand
 - Android version and SDK level
 - Device name (from system settings)
 
 ### SIM Information
+
 - SIM state and operator details
 - Network country and type
 - Dual SIM support with slot information
 - Phone numbers (if available)
 
 ### Network Information
+
 - Connection status and type
 - WiFi details (SSID, signal strength, frequency)
 - IP addresses (IPv4/IPv6)
 - Roaming status
 
 ### App Configuration
+
 - Service running status and start count
 - Number of forwarding rules configured
 - Webhook configuration status
@@ -129,6 +141,7 @@ The enhanced webhook features require the following permissions:
 ## Webhook Payload Format
 
 ### App Webhook Events
+
 App webhook events (app start, SIM status) use the global enhanced data configuration:
 
 ```json
@@ -148,6 +161,7 @@ App webhook events (app start, SIM status) use the global enhanced data configur
 ```
 
 ### Enhanced Forwarding Rule Events
+
 Forwarding rule events use per-rule enhanced data configuration:
 
 ```json
@@ -369,63 +383,69 @@ Common network types include:
 ## Example Webhook Server (Node.js)
 
 ```javascript
-const express = require('express');
+const express = require("express");
 const app = express();
 
 app.use(express.json());
 
-app.post('/webhook', (req, res) => {
+app.post("/webhook", (req, res) => {
   const { event, timestamp, device_id, message, data } = req.body;
-  
+
   console.log(`Received ${event} from ${device_id} at ${new Date(timestamp)}`);
   console.log(`Message: ${message}`);
-  
+
   // Handle different event types
-  switch(event) {
-    case 'sms_received':
+  switch (event) {
+    case "sms_received":
       console.log(`SMS from ${data.from}: ${data.text}`);
       break;
-    case 'call_received':
+    case "call_received":
       console.log(`Call from ${data.from} (${data.contact})`);
       break;
-    case 'push_notification_received':
+    case "push_notification_received":
       console.log(`Notification from ${data.package}: ${data.title}`);
       break;
-    case 'app_manual_start':
-    case 'app_auto_start':
+    case "app_manual_start":
+    case "app_auto_start":
       console.log(`App started: ${event}`);
       break;
-    case 'sim_status_changed':
+    case "sim_status_changed":
       console.log(`SIM status: ${data.sim_status}`);
       break;
   }
-  
+
   // Process enhanced device info if available
   if (data.device_info) {
     const deviceInfo = data.device_info;
-    console.log(`Device: ${deviceInfo.device_manufacturer} ${deviceInfo.device_model}`);
-    
+    console.log(
+      `Device: ${deviceInfo.device_manufacturer} ${deviceInfo.device_model}`
+    );
+
     if (deviceInfo.sim_info) {
-      console.log(`SIM: ${deviceInfo.sim_info.sim_operator} (${deviceInfo.sim_info.sim_state})`);
+      console.log(
+        `SIM: ${deviceInfo.sim_info.sim_operator} (${deviceInfo.sim_info.sim_state})`
+      );
     }
-    
+
     if (deviceInfo.network_info) {
       console.log(`Network: ${deviceInfo.network_info.connection_type}`);
       if (deviceInfo.network_info.wifi_info) {
         console.log(`WiFi: ${deviceInfo.network_info.wifi_info.ssid}`);
       }
     }
-    
+
     if (deviceInfo.app_config) {
-      console.log(`App: v${deviceInfo.app_config.version_name} (${deviceInfo.app_config.forwarding_rules_count} rules)`);
+      console.log(
+        `App: v${deviceInfo.app_config.version_name} (${deviceInfo.app_config.forwarding_rules_count} rules)`
+      );
     }
   }
-  
-  res.status(200).json({ status: 'received' });
+
+  res.status(200).json({ status: "received" });
 });
 
 app.listen(3000, () => {
-  console.log('Webhook server listening on port 3000');
+  console.log("Webhook server listening on port 3000");
 });
 ```
 
@@ -438,4 +458,4 @@ app.listen(3000, () => {
 - **Fleet Management**: Comprehensive device status monitoring for enterprise deployments
 - **Compliance Reporting**: Detailed audit trails with device and network context
 - **Performance Optimization**: Identify patterns affecting app performance and reliability
-- **User Behavior Analysis**: Understand how users interact with the device and apps 
+- **User Behavior Analysis**: Understand how users interact with the device and apps

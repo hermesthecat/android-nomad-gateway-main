@@ -11,6 +11,7 @@ This guide explains how to test SMS, call, and push notification forwarding usin
 ## Setup Instructions
 
 ### 1. Start the Emulator
+
 ```bash
 export ANDROID_HOME=~/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools
@@ -18,11 +19,13 @@ emulator -avd Medium_Phone_API_36.0 -no-snapshot-load
 ```
 
 ### 2. Install the App
+
 ```bash
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### 3. Set Up Test Webhook
+
 1. Go to https://webhook.site
 2. Copy the unique URL (e.g., `https://webhook.site/12345678-1234-1234-1234-123456789abc`)
 3. Use this URL in your forwarding rules
@@ -32,6 +35,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 ### 🔔 Testing Push Notifications
 
 #### Method 1: Using ADB Commands
+
 ```bash
 # Send a test notification
 adb shell am broadcast -a com.android.test.notification \
@@ -41,11 +45,13 @@ adb shell am broadcast -a com.android.test.notification \
 ```
 
 #### Method 2: Using Apps
+
 1. Install apps like Chrome, Gmail, or WhatsApp on the emulator
 2. Sign in and enable notifications
 3. Send yourself emails or messages to trigger notifications
 
 #### Method 3: Using Notification Tester App
+
 ```bash
 # Install a notification testing app
 adb install path/to/notification-tester.apk
@@ -54,50 +60,61 @@ adb install path/to/notification-tester.apk
 ### 📱 Testing SMS Messages
 
 #### Method 1: Using Emulator Console
+
 1. Open terminal and connect to emulator console:
+
 ```bash
 telnet localhost 5554
 ```
 
 2. Send SMS to emulator:
+
 ```
 sms send +1234567890 "Test SMS message"
 ```
 
 3. Exit console:
+
 ```
 exit
 ```
 
 #### Method 2: Using ADB Commands
+
 ```bash
 # Send SMS via ADB
 adb emu sms send +1234567890 "Test SMS from ADB"
 ```
 
 #### Method 3: Using Another Emulator Instance
+
 1. Start a second emulator
 2. Use the phone app to send SMS between emulators
 
 ### 📞 Testing Phone Calls
 
 #### Method 1: Using Emulator Console
+
 1. Connect to emulator console:
+
 ```bash
 telnet localhost 5554
 ```
 
 2. Simulate incoming call:
+
 ```
 gsm call +1234567890
 ```
 
 3. End the call:
+
 ```
 gsm cancel +1234567890
 ```
 
 #### Method 2: Using ADB Commands
+
 ```bash
 # Simulate incoming call
 adb emu gsm call +1234567890
@@ -111,10 +128,12 @@ adb emu gsm cancel +1234567890
 ### 1. Create Forwarding Rules
 
 #### SMS Rule
+
 - **Activity Type**: SMS
 - **Source**: Specific phone number or "All sources"
 - **Webhook URL**: Your webhook.site URL
-- **Template**: 
+- **Template**:
+
 ```json
 {
   "from": "%from%",
@@ -125,10 +144,12 @@ adb emu gsm cancel +1234567890
 ```
 
 #### Push Notification Rule
+
 - **Activity Type**: Push
 - **Source**: Specific app or "All sources"
 - **Webhook URL**: Your webhook.site URL
 - **Template**:
+
 ```json
 {
   "app": "%package%",
@@ -140,10 +161,12 @@ adb emu gsm cancel +1234567890
 ```
 
 #### Call Rule
+
 - **Activity Type**: Calls
 - **Source**: Specific phone numbers or "All sources"
 - **Webhook URL**: Your webhook.site URL
 - **Template**:
+
 ```json
 {
   "from": "%from%",
@@ -156,6 +179,7 @@ adb emu gsm cancel +1234567890
 ### 2. Grant Permissions
 
 Make sure to grant all required permissions in the emulator:
+
 - **SMS**: SMS permissions
 - **Calls**: Phone and Contacts permissions
 - **Push**: Notification access (Settings > Apps > Special access > Notification access)
@@ -169,6 +193,7 @@ Make sure to grant all required permissions in the emulator:
 ## Advanced Testing Scripts
 
 ### Automated SMS Testing
+
 ```bash
 #!/bin/bash
 # test_sms.sh
@@ -181,6 +206,7 @@ echo "SMS sent. Check your webhook endpoint."
 ```
 
 ### Automated Call Testing
+
 ```bash
 #!/bin/bash
 # test_calls.sh
@@ -195,6 +221,7 @@ echo "Call simulation complete. Check your webhook endpoint."
 ```
 
 ### Batch Testing
+
 ```bash
 #!/bin/bash
 # batch_test.sh
@@ -215,17 +242,20 @@ echo "All tests completed. Check your webhook endpoint for results."
 
 ### Common Issues
 
-1. **No SMS Received**: 
+1. **No SMS Received**:
+
    - Check if SMS app is set as default
    - Verify phone number format
    - Check emulator console connection
 
 2. **No Call Events**:
+
    - Ensure phone permissions are granted
    - Check if call is actually ringing (not just dialing)
    - Verify phone state broadcast receiver is registered
 
 3. **No Push Notifications**:
+
    - Enable notification access for the app
    - Install apps that actually send notifications
    - Check notification listener service is running
@@ -260,4 +290,4 @@ When testing is successful, you should see:
 2. **Calls**: JSON payload with caller number, contact name, timestamp, and duration
 3. **Push**: JSON payload with app package, title, content, and timestamp
 
-Each payload should appear on your webhook.site URL within seconds of triggering the test event. 
+Each payload should appear on your webhook.site URL within seconds of triggering the test event.

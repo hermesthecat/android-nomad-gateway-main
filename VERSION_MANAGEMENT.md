@@ -19,11 +19,13 @@ The project uses semantic versioning (SemVer) with automated scripts for version
 **Purpose:** Increment version numbers and create git commits/tags.
 
 **Usage:**
+
 ```bash
 ./version_bump.sh [major|minor|patch] [commit_message]
 ```
 
 **Examples:**
+
 ```bash
 # Patch version (1.0.0 -> 1.0.1)
 ./version_bump.sh patch "Fix SMS forwarding bug"
@@ -36,6 +38,7 @@ The project uses semantic versioning (SemVer) with automated scripts for version
 ```
 
 **What it does:**
+
 1. ✅ Validates git repository state (no uncommitted changes)
 2. ✅ Parses current version from `app/build.gradle`
 3. ✅ Increments version according to SemVer rules
@@ -51,11 +54,13 @@ The project uses semantic versioning (SemVer) with automated scripts for version
 **Purpose:** Perform a complete release including APK building and GitHub release.
 
 **Usage:**
+
 ```bash
 ./release.sh [major|minor|patch] [release_message]
 ```
 
 **Examples:**
+
 ```bash
 # Patch release
 ./release.sh patch "Critical bug fixes and stability improvements"
@@ -68,6 +73,7 @@ The project uses semantic versioning (SemVer) with automated scripts for version
 ```
 
 **What it does:**
+
 1. ✅ Updates version numbers in build.gradle and CHANGELOG.md
 2. ✅ Builds release APK with debug signing
 3. ✅ Runs test suite
@@ -111,11 +117,11 @@ The project follows [Semantic Versioning 2.0.0](https://semver.org/):
 
 ### Examples
 
-| Change Type | Current | New | versionCode | Description |
-|-------------|---------|-----|-------------|-------------|
-| Patch | 1.0.0 | 1.0.1 | +1 | Bug fixes, small improvements |
-| Minor | 1.0.1 | 1.1.0 | +1 | New features, UI updates |
-| Major | 1.1.0 | 2.0.0 | +1 | Breaking changes, redesign |
+| Change Type | Current | New   | versionCode | Description                   |
+| ----------- | ------- | ----- | ----------- | ----------------------------- |
+| Patch       | 1.0.0   | 1.0.1 | +1          | Bug fixes, small improvements |
+| Minor       | 1.0.1   | 1.1.0 | +1          | New features, UI updates      |
+| Major       | 1.1.0   | 2.0.0 | +1          | Breaking changes, redesign    |
 
 ## 📝 Changelog Format
 
@@ -129,15 +135,18 @@ The system automatically maintains `CHANGELOG.md` following [Keep a Changelog](h
 ## [1.1.0] - 2024-01-15
 
 ### Added
+
 - Material Design 3 UI implementation
 - Operator settings for SIM management
 - Enhanced permission management
 
 ### Fixed
+
 - SMS forwarding reliability issues
 - Memory leak in MainActivity
 
 ### Changed
+
 - Updated to Android API 35
 - Modernized SSL handling
 ```
@@ -243,6 +252,7 @@ Release notes are automatically generated with:
 ### Common Issues
 
 **"Not in a git repository"**
+
 ```bash
 # Initialize git if needed
 git init
@@ -250,6 +260,7 @@ git remote add origin <your-repo-url>
 ```
 
 **"Uncommitted changes detected"**
+
 ```bash
 # Commit or stash changes first
 git add .
@@ -259,11 +270,13 @@ git stash
 ```
 
 **"Build failed during version bump"**
+
 - The script automatically rolls back changes
 - Check build errors with: `./gradlew assembleDebug`
 - Fix issues and try again
 
 **"GitHub CLI not found"**
+
 ```bash
 # Install GitHub CLI
 brew install gh
@@ -348,4 +361,4 @@ For issues with the version management system:
 
 ---
 
-**Happy releasing! 🚀** 
+**Happy releasing! 🚀**

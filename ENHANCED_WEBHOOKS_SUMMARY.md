@@ -7,6 +7,7 @@ Successfully implemented per-rule enhanced webhook functionality for SMS, calls,
 ## Key Features Implemented
 
 ### 1. Per-Rule Enhanced Data Configuration
+
 - **Individual Rule Control**: Each forwarding rule has its own enhanced data settings
 - **Granular Configuration**: Users can select different enhanced data types for each rule
 - **Master Switch**: Enable/disable enhanced data per rule with a master switch
@@ -15,6 +16,7 @@ Successfully implemented per-rule enhanced webhook functionality for SMS, calls,
 ### 2. Enhanced Data Configuration UI
 
 #### ForwardingRuleEditActivity
+
 - Added Enhanced Data Configuration section to rule editing UI
 - Master switch to enable/disable enhanced data for the rule
 - Individual switches for each data type:
@@ -24,6 +26,7 @@ Successfully implemented per-rule enhanced webhook functionality for SMS, calls,
   - App Configuration (service status, rules count, permissions)
 
 #### ForwardingConfig.java
+
 - Added enhanced data configuration fields to ForwardingConfig class
 - `enhancedDataEnabled` - Master switch for enhanced data
 - `includeDeviceInfo` - Include device information
@@ -35,25 +38,29 @@ Successfully implemented per-rule enhanced webhook functionality for SMS, calls,
 ### 3. Per-Rule Enhanced Message Preparation
 
 #### Enhanced Methods
+
 - `prepareEnhancedMessage()` - Enhanced SMS webhooks using rule-specific configuration
 - `prepareEnhancedNotificationMessage()` - Enhanced push notification webhooks
 - `prepareEnhancedCallMessage()` - Enhanced call webhooks
 - `addEnhancedDeviceInfoForRule()` - Device info filtering based on rule preferences
 
 #### Updated Components
+
 - **SmsBroadcastReceiver**: Uses per-rule enhanced SMS message preparation
-- **NotificationListenerService**: Uses per-rule enhanced notification message preparation  
+- **NotificationListenerService**: Uses per-rule enhanced notification message preparation
 - **CallWebhookWorker**: Uses per-rule enhanced call message preparation
 - **ForwardingConfigDialog**: Test webhooks use per-rule enhanced payloads
 
 ### 4. Two-Level Enhanced Data System
 
 #### App Webhooks (Global Settings)
+
 - Configure enhanced data for dedicated app webhook events
 - App start events (manual/auto) use global enhanced data configuration
 - SIM status change events use global enhanced data configuration
 
 #### Per-Rule Enhanced Data (Individual Rules)
+
 - Each forwarding rule has independent enhanced data configuration
 - SMS, call, and push notification rules use their own enhanced data settings
 - Granular control over what data to include for each specific use case
@@ -104,6 +111,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 ## User Experience
 
 ### Configuration Flow
+
 1. Create or edit a forwarding rule
 2. Configure basic rule settings (activity type, sources, webhook URL)
 3. In Enhanced Data Configuration section:
@@ -123,23 +131,27 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 ## Enhanced Data Categories
 
 ### Device Information
+
 - Device model, manufacturer, brand, product
 - Android version and SDK level
 - Device name from system settings
 
 ### SIM Information
+
 - SIM state and operator details
 - Network country and type information
 - Dual SIM support with slot information
 - Phone numbers (if available and permitted)
 
 ### Network Information
+
 - Connection status and type
 - WiFi details (SSID, signal strength, frequency)
 - IP addresses (IPv4/IPv6) with interface information
 - Roaming status and connectivity details
 
 ### App Configuration
+
 - Service running status and start count
 - Number of forwarding rules configured
 - Webhook configuration status
@@ -148,6 +160,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 ## Security & Privacy
 
 ### Privacy Controls
+
 - **Per-Rule Configuration**: Enhanced data is configurable per individual rule
 - **Granular Control**: Users choose exactly what data to include for each rule
 - **Local Processing**: All data collected locally, no external services
@@ -155,6 +168,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 - **Selective Sharing**: Sensitive data can be limited to trusted endpoints
 
 ### Security Features
+
 - **HTTPS Support**: SSL/TLS encryption for webhook endpoints
 - **Custom SSL Factory**: Support for custom SSL configurations
 - **Error Handling**: Secure error handling without data leakage
@@ -164,6 +178,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 ## Documentation Updates
 
 ### APP_WEBHOOKS_GUIDE.md
+
 - Added per-rule enhanced data configuration section
 - Explained two-level enhanced data system (global vs per-rule)
 - Updated payload examples for per-rule configuration
@@ -171,6 +186,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 - Updated Node.js webhook server example
 
 ### Configuration Examples
+
 - Per-rule enhanced data configuration workflow
 - Benefits and use cases for granular control
 - Privacy and performance optimization strategies
@@ -179,6 +195,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 ## Testing & Validation
 
 ### Test Coverage
+
 - Per-rule enhanced data configuration UI
 - Enhanced data persistence and loading
 - Payload generation with rule-specific filtering
@@ -186,6 +203,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 - Error handling and fallback scenarios
 
 ### Validation Points
+
 - Successful build with no compilation errors
 - UI correctly shows/hides enhanced data options
 - Enhanced data properly filtered based on rule preferences
@@ -195,6 +213,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 ## Future Enhancements
 
 ### Potential Improvements
+
 1. **Enhanced Data Templates**: Custom template variables for enhanced data
 2. **Data Validation**: Validate enhanced data before including in payloads
 3. **Conditional Logic**: Include enhanced data based on conditions
@@ -202,6 +221,7 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 5. **Enhanced Data Analytics**: Track enhanced data usage and performance
 
 ### Advanced Features
+
 - **Rule Groups**: Apply enhanced data settings to groups of rules
 - **Enhanced Data Profiles**: Predefined enhanced data configurations
 - **Dynamic Data Selection**: Include enhanced data based on webhook response
@@ -213,9 +233,10 @@ Per-rule enhanced webhooks use a consistent JSON structure:
 The per-rule enhanced webhook implementation provides a comprehensive, user-controlled system for collecting and forwarding rich device information with individual communication events. The architecture maintains backward compatibility while offering powerful new capabilities for device monitoring, analytics, and integration with external systems.
 
 Key benefits:
+
 - **Granular control** over enhanced data for each individual rule
 - **Privacy and performance optimization** through selective data inclusion
 - **Backward compatibility** with existing configurations
 - **Rich device context** for better analytics and monitoring
 - **Production-ready** security and error handling
-- **Flexible architecture** supporting diverse use cases and integration patterns 
+- **Flexible architecture** supporting diverse use cases and integration patterns

@@ -7,6 +7,7 @@ This guide addresses the runtime errors you're experiencing with your SMS Gatewa
 ## 🚨 **Critical Issues Identified**
 
 ### 1. **Foreground Service Permission Denied**
+
 ```
 E  Operation not started: uid=10217 pkg=tech.wdg.incomingactivitygateway(null) op=START_FOREGROUND
 ```
@@ -14,13 +15,15 @@ E  Operation not started: uid=10217 pkg=tech.wdg.incomingactivitygateway(null) o
 **Root Cause**: Android 14+ (API 34+) has stricter foreground service requirements.
 
 **Solutions Implemented**:
+
 - ✅ Added `FOREGROUND_SERVICE_DATA_SYNC` permission
-- ✅ Added `FOREGROUND_SERVICE_SPECIAL_USE` permission  
+- ✅ Added `FOREGROUND_SERVICE_SPECIAL_USE` permission
 - ✅ Updated service manifest with `specialUse` type
 - ✅ Added meta-data for special use justification
 - ✅ Enhanced error handling in service startup
 
 ### 2. **APK Asset Loading Errors**
+
 ```
 E  Failed to open APK '/data/app/.../base.apk': I/O error
 ```
@@ -28,11 +31,13 @@ E  Failed to open APK '/data/app/.../base.apk': I/O error
 **Root Cause**: Rapid app restarts or installation corruption.
 
 **Solutions**:
+
 - Clean and rebuild the project
 - Uninstall and reinstall the app
 - Clear app data and cache
 
 ### 3. **Dead Object Exceptions**
+
 ```
 E  unable to notify listener: android.os.DeadObjectException
 ```
@@ -40,6 +45,7 @@ E  unable to notify listener: android.os.DeadObjectException
 **Root Cause**: NotificationListenerService being killed by system.
 
 **Solutions Implemented**:
+
 - ✅ Enhanced service restart mechanism
 - ✅ Better error handling in service lifecycle
 - ✅ Improved state tracking
@@ -47,25 +53,30 @@ E  unable to notify listener: android.os.DeadObjectException
 ## 🛠️ **Immediate Actions Required**
 
 ### Step 1: Clean Build
+
 ```bash
 ./gradlew clean
 ./gradlew build
 ```
 
 ### Step 2: Uninstall and Reinstall
+
 ```bash
 adb uninstall tech.wdg.incomingactivitygateway
 adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### Step 3: Grant Permissions Manually
+
 1. Go to **Settings → Apps → SMS Gateway**
 2. **Permissions → Allow all requested permissions**
 3. **Special app access → Battery optimization → Don't optimize**
 4. **Special app access → Notification access → Enable**
 
 ### Step 4: Check Foreground Service Permissions
+
 For Android 14+:
+
 1. **Settings → Apps → SMS Gateway → Permissions**
 2. Look for **"Foreground services"** permission
 3. Ensure it's enabled
@@ -73,6 +84,7 @@ For Android 14+:
 ## 🔧 **Technical Fixes Implemented**
 
 ### Enhanced Manifest Configuration
+
 ```xml
 <!-- Added Android 14+ foreground service permissions -->
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
@@ -89,6 +101,7 @@ For Android 14+:
 ```
 
 ### Enhanced Service Error Handling
+
 ```java
 private void startForegroundWithNotification() {
     try {
@@ -102,6 +115,7 @@ private void startForegroundWithNotification() {
 ```
 
 ### Permission Request Updates
+
 - Added Android 14+ foreground service permissions to request flow
 - Enhanced permission explanation dialog
 - Better error handling for permission denials
@@ -109,6 +123,7 @@ private void startForegroundWithNotification() {
 ## 📱 **Device-Specific Issues**
 
 ### Android 16 (API 36) Considerations
+
 Your device is running a very new Android version with stricter requirements:
 
 1. **Foreground Service Restrictions**: More stringent permission checks
@@ -116,7 +131,9 @@ Your device is running a very new Android version with stricter requirements:
 3. **Security Enhancements**: Stricter APK validation
 
 ### Google Pixel Specific
+
 Since you're on a Google device:
+
 1. **Adaptive Battery**: May be aggressively killing your app
 2. **App Standby**: May put your app in standby mode
 3. **Background App Refresh**: May be disabled
@@ -124,6 +141,7 @@ Since you're on a Google device:
 ## 🔍 **Debugging Steps**
 
 ### Check Current Status
+
 ```bash
 # Check if service is running
 adb shell dumpsys activity services tech.wdg.incomingactivitygateway
@@ -136,6 +154,7 @@ adb shell dumpsys deviceidle whitelist | grep tech.wdg.incomingactivitygateway
 ```
 
 ### Monitor Logs
+
 ```bash
 # Filter for your app logs
 adb logcat | grep "tech.wdg.incomingactivitygateway"
@@ -150,17 +169,20 @@ adb logcat | grep "SmsReceiverService"
 ## ⚡ **Quick Fixes**
 
 ### 1. Force Stop and Restart
+
 ```bash
 adb shell am force-stop tech.wdg.incomingactivitygateway
 adb shell am start -n tech.wdg.incomingactivitygateway/.MainActivity
 ```
 
 ### 2. Clear App Data
+
 ```bash
 adb shell pm clear tech.wdg.incomingactivitygateway
 ```
 
 ### 3. Disable Battery Optimization
+
 ```bash
 adb shell dumpsys deviceidle whitelist +tech.wdg.incomingactivitygateway
 ```
@@ -196,8 +218,9 @@ After implementing these fixes, you should see:
 ## 📞 **Support Information**
 
 If you continue experiencing issues:
+
 1. Provide the output of `adb logcat` after implementing fixes
 2. Share device information: `adb shell getprop ro.build.version.release`
 3. Check if the issue occurs on other Android versions
 
-The fixes implemented should resolve the foreground service permission issues and improve overall app stability on Android 16. 
+The fixes implemented should resolve the foreground service permission issues and improve overall app stability on Android 16.

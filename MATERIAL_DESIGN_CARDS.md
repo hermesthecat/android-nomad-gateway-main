@@ -5,7 +5,9 @@ This document outlines the modern Material Design 3 card system implemented in t
 ## Card Types
 
 ### 1. Elevated Cards (Primary Choice)
+
 **Usage**: Main content cards, list items, primary information containers
+
 ```xml
 <com.google.android.material.card.MaterialCardView
     style="@style/Widget.App.CardView.Elevated"
@@ -14,13 +16,16 @@ This document outlines the modern Material Design 3 card system implemented in t
 ```
 
 **Properties**:
+
 - Elevation: 2dp
 - Corner Radius: 20dp
 - Background: `?attr/colorSurface`
 - No stroke/border
 
 ### 2. Filled Cards
+
 **Usage**: Secondary content, supporting information, grouped content
+
 ```xml
 <com.google.android.material.card.MaterialCardView
     style="@style/Widget.App.CardView.Filled"
@@ -29,13 +34,16 @@ This document outlines the modern Material Design 3 card system implemented in t
 ```
 
 **Properties**:
+
 - Elevation: 0dp
 - Corner Radius: 16dp
 - Background: `?attr/colorSurfaceVariant`
 - No stroke/border
 
 ### 3. Outlined Cards (Legacy Support)
+
 **Usage**: Only when borders are specifically needed for accessibility or design requirements
+
 ```xml
 <com.google.android.material.card.MaterialCardView
     style="@style/Widget.App.CardView.Outlined"
@@ -44,6 +52,7 @@ This document outlines the modern Material Design 3 card system implemented in t
 ```
 
 **Properties**:
+
 - Elevation: 0dp
 - Corner Radius: 16dp
 - Background: `?attr/colorSurface`
@@ -52,18 +61,21 @@ This document outlines the modern Material Design 3 card system implemented in t
 ## Design Principles
 
 ### Modern Material Design 3 Approach
+
 1. **No Borders by Default**: Modern cards use elevation and surface tinting instead of borders
 2. **Generous Corner Radius**: 16dp-24dp for a softer, more contemporary look
 3. **Subtle Elevation**: 1dp-3dp for depth without overwhelming shadows
 4. **Surface Tinting**: Uses Material You color system for dynamic theming
 
 ### Elevation Hierarchy
+
 - **1dp**: Subtle cards, secondary content
 - **2dp**: Standard cards, list items
 - **3dp**: Important cards, headers
 - **6dp**: Floating elements, dialogs
 
 ### Corner Radius Scale
+
 - **12dp**: Small components, chips
 - **16dp**: Standard cards
 - **20dp**: Large cards, primary content
@@ -72,6 +84,7 @@ This document outlines the modern Material Design 3 card system implemented in t
 ## Implementation Examples
 
 ### List Item Cards
+
 ```xml
 <!-- Modern list item with elevated card -->
 <com.google.android.material.card.MaterialCardView
@@ -86,6 +99,7 @@ This document outlines the modern Material Design 3 card system implemented in t
 ```
 
 ### Header Cards
+
 ```xml
 <!-- Hero header card with maximum visual impact -->
 <com.google.android.material.card.MaterialCardView
@@ -96,6 +110,7 @@ This document outlines the modern Material Design 3 card system implemented in t
 ```
 
 ### Content Cards
+
 ```xml
 <!-- Filled cards for secondary content -->
 <com.google.android.material.card.MaterialCardView
@@ -142,4 +157,4 @@ The previous implementation used bordered cards (`strokeWidth="1dp"`). The new s
 
 - [Material Design 3 Cards](https://m3.material.io/components/cards)
 - [Material Design 3 Elevation](https://m3.material.io/styles/elevation/overview)
-- [Material You Color System](https://m3.material.io/styles/color/overview) 
+- [Material You Color System](https://m3.material.io/styles/color/overview)
