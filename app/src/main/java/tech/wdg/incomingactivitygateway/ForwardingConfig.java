@@ -42,6 +42,31 @@ public class ForwardingConfig {
         }
     }
 
+    // Forwarding types
+    public enum ForwardingType {
+        WEBHOOK("webhook"),
+        SMS("sms");
+
+        private final String value;
+
+        ForwardingType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static ForwardingType fromString(String value) {
+            for (ForwardingType type : ForwardingType.values()) {
+                if (type.value.equals(value)) {
+                    return type;
+                }
+            }
+            return WEBHOOK; // Default fallback
+        }
+    }
+
     private static final String KEY_KEY = "key";
     private static final String KEY_SENDER = "sender";
     private static final String KEY_URL = "url";
@@ -54,6 +79,8 @@ public class ForwardingConfig {
     private static final String KEY_IS_SMS_ENABLED = "isSmsEnabled";
     private static final String KEY_IS_NOTIFICATION_ENABLED = "isNotificationEnabled";
     private static final String KEY_ACTIVITY_TYPE = "activityType";
+    private static final String KEY_FORWARDING_TYPE = "forwardingType";
+    private static final String KEY_FORWARDING_NUMBER = "forwardingNumber";
 
     // Enhanced data configuration keys
     private static final String KEY_ENHANCED_DATA_ENABLED = "enhancedDataEnabled";
@@ -77,6 +104,8 @@ public class ForwardingConfig {
     public boolean isSmsEnabled = true;
     public boolean isNotificationEnabled;
     public ActivityType activityType = ActivityType.SMS;
+    public ForwardingType forwardingType = ForwardingType.WEBHOOK;
+    public String forwardingNumber;
 
     // Enhanced data configuration
     public boolean enhancedDataEnabled = false;
@@ -186,6 +215,22 @@ public class ForwardingConfig {
         this.activityType = activityType;
     }
 
+    public ForwardingType getForwardingType() {
+        return forwardingType;
+    }
+
+    public void setForwardingType(ForwardingType forwardingType) {
+        this.forwardingType = forwardingType;
+    }
+
+    public String getForwardingNumber() {
+        return forwardingNumber;
+    }
+
+    public void setForwardingNumber(String forwardingNumber) {
+        this.forwardingNumber = forwardingNumber;
+    }
+
     // Enhanced data configuration getters and setters
     public boolean isEnhancedDataEnabled() {
         return this.enhancedDataEnabled;
@@ -258,6 +303,8 @@ public class ForwardingConfig {
             json.put(KEY_IS_SMS_ENABLED, this.isSmsEnabled);
             json.put(KEY_IS_NOTIFICATION_ENABLED, this.isNotificationEnabled);
             json.put(KEY_ACTIVITY_TYPE, this.activityType.getValue());
+            json.put(KEY_FORWARDING_TYPE, this.forwardingType.getValue());
+            json.put(KEY_FORWARDING_NUMBER, this.forwardingNumber);
             json.put("isOn", this.isOn);
 
             // Enhanced data configuration
@@ -342,6 +389,14 @@ public class ForwardingConfig {
 
                     if (json.has(KEY_ACTIVITY_TYPE)) {
                         config.activityType = ActivityType.fromString(json.getString(KEY_ACTIVITY_TYPE));
+                    }
+
+                    if (json.has(KEY_FORWARDING_TYPE)) {
+                        config.forwardingType = ForwardingType.fromString(json.getString(KEY_FORWARDING_TYPE));
+                    }
+
+                    if (json.has(KEY_FORWARDING_NUMBER)) {
+                        config.forwardingNumber = json.getString(KEY_FORWARDING_NUMBER);
                     }
 
                     // Load enhanced data configuration

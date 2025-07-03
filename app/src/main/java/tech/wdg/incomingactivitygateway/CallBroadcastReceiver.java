@@ -158,22 +158,47 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void sendCallWebhook(ForwardingConfig config, String phoneNumber, String contactName, String simName) {
-        Data inputData = new Data.Builder()
-                .putString("config_key", config.getKey())
-                .putString("phone_number", phoneNumber)
-                .putString("contact_name", contactName != null ? contactName : "")
-                .putString("sim_name", simName)
-                .putLong("timestamp", System.currentTimeMillis())
-                .build();
+        long timeStamp = System.currentTimeMillis();
+
+        String message;
+        if (config.getForwardingType() == ForwardingConfig.ForwardingType.SMS) {
+            // For SMS forwarding, create a simple text message
+            message = "Incoming call from: " + phoneNumber;
+            if (contactName != null && !contactName.isEmpty()) {
+                message += " (" + contactName + ")";
+            }
+        } else {
+            // For webhooks, use the configured template
+            message = config.prepareEnhancedCallMessage(phoneNumber, contactName, simName, timeStamp);
+        }
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build();
 
-        WorkRequest workRequest = new OneTimeWorkRequest.Builder(CallWebhookWorker.class)
-                .setInputData(inputData)
+        Data.Builder dataBuilder = new Data.Builder()
+                .putString(RequestWorker.DATA_TEXT, message)
+                .putBoolean(RequestWorker.DATA_IGNORE_SSL, config.getIgnoreSsl())
+                .putBoolean(RequestWorker.DATA_CHUNKED_MODE, config.getChunkedMode())
+                .putInt(RequestWorker.DATA_MAX_RETRIES, config.getRetriesNumber())
+                .putString(RequestWorker.DATA_FORWARDING_TYPE, config.getForwardingType().getValue());
+
+        if (config.getForwardingType() == ForwardingConfig.ForwardingType.SMS) {
+            dataBuilder.putString(RequestWorker.DATA_FORWARDING_NUMBER, config.getForwardingNumber());
+        } else {
+            dataBuilder.putString(RequestWorker.DATA_URL, config.getUrl());
+            dataBuilder.putString(RequestWorker.DATA_HEADERS, config.getHeaders());
+        }
+
+        Data data = dataBuilder.build();
+
+        WorkRequest workRequest = new OneTimeWorkRequest.Builder(RequestWorker.class)
                 .setConstraints(constraints)
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                .setBackoffCriteria(
+                        BackoffPolicy.EXPONENTIAL,
+                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                        TimeUnit.MILLISECONDS)
+                .setInputData(data)
                 .build();
 
         WorkManager.getInstance(context).enqueue(workRequest);

@@ -62,6 +62,14 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
     private Chip chipTypePush;
     private Chip chipTypeCall;
 
+    // Forwarding type selection
+    private ChipGroup forwardingTypeChipGroup;
+    private Chip chipTypeWebhook;
+    private Chip chipTypeSmsForward;
+    private LinearLayout webhookSettingsContainer;
+    private LinearLayout smsForwardingContainer;
+    private TextInputEditText forwardingPhoneNumberInput;
+
     // App selection (for push notifications)
     private AutoCompleteTextView appSelectorDropdown;
     private LinearLayout appSelectorContainer;
@@ -153,6 +161,7 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
         initializeViews();
         loadInstalledApps();
         setupActivityTypeHandling();
+        setupForwardingTypeHandling();
         setupAllSourcesHandling();
         loadConfigData();
         setupClickListeners();
@@ -179,6 +188,14 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
         chipTypeSms = findViewById(R.id.chip_type_sms);
         chipTypePush = findViewById(R.id.chip_type_push);
         chipTypeCall = findViewById(R.id.chip_type_call);
+
+        // Forwarding type selection
+        forwardingTypeChipGroup = findViewById(R.id.forwarding_type_chip_group);
+        chipTypeWebhook = findViewById(R.id.chip_type_webhook);
+        chipTypeSmsForward = findViewById(R.id.chip_type_sms_forward);
+        webhookSettingsContainer = findViewById(R.id.webhook_settings_container);
+        smsForwardingContainer = findViewById(R.id.sms_forwarding_container);
+        forwardingPhoneNumberInput = findViewById(R.id.forwarding_phone_number);
 
         // App selection (for push notifications)
         appSelectorDropdown = findViewById(R.id.app_selector_dropdown);
@@ -344,31 +361,8 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
     }
 
     private void populateFields() {
-        // Handle "All sources" switch
-        if ("*".equals(config.getSender())) {
-            allSourcesSwitch.setChecked(true);
-            sourceFilteringContainer.setVisibility(View.GONE);
-            selectedAppPackage = null; // Clear app selection
-        } else {
-            allSourcesSwitch.setChecked(false);
-            sourceFilteringContainer.setVisibility(View.VISIBLE);
-
-            // Set the appropriate field based on activity type
-            if (config.getActivityType() == ForwardingConfig.ActivityType.PUSH) {
-                selectedAppPackage = config.getSender();
-                // Find and set the app in dropdown
-                for (int i = 0; i < installedApps.size(); i++) {
-                    if (installedApps.get(i).packageName.equals(selectedAppPackage)) {
-                        appSelectorDropdown.setText(installedApps.get(i).toString(), false);
-                        break;
-                    }
-                }
-            } else if (config.getActivityType() == ForwardingConfig.ActivityType.CALL) {
-                // Don't set in text field, will be handled by parseExistingPhoneNumbers
-            } else {
-                // For SMS, don't set in text field, will be handled by
-                // parseExistingSmsPhoneNumbers
-            }
+        if (config == null) {
+            return;
         }
 
         urlInput.setText(config.getUrl());
@@ -376,18 +370,31 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
         ignoreSslSwitch.setChecked(config.getIgnoreSsl());
         chunkedModeSwitch.setChecked(config.getChunkedMode());
 
-        // Set activity type
-        if (config.getActivityType() == ForwardingConfig.ActivityType.PUSH) {
-            chipTypePush.setChecked(true);
-            appSelectorContainer.setVisibility(View.VISIBLE);
-            updateUIForPushNotifications();
-        } else if (config.getActivityType() == ForwardingConfig.ActivityType.CALL) {
-            chipTypeCall.setChecked(true);
-            updateUIForCalls();
+        // Set forwarding type
+        if (config.getForwardingType() == ForwardingConfig.ForwardingType.SMS) {
+            forwardingTypeChipGroup.check(R.id.chip_type_sms_forward);
+            forwardingPhoneNumberInput.setText(config.getForwardingNumber());
         } else {
-            chipTypeSms.setChecked(true);
-            appSelectorContainer.setVisibility(View.GONE);
-            updateUIForSMS();
+            forwardingTypeChipGroup.check(R.id.chip_type_webhook);
+        }
+        updateUIForForwardingType();
+
+        // Set activity type
+        switch (config.getActivityType()) {
+            case PUSH:
+                chipTypePush.setChecked(true);
+                appSelectorContainer.setVisibility(View.VISIBLE);
+                updateUIForPushNotifications();
+                break;
+            case CALL:
+                chipTypeCall.setChecked(true);
+                updateUIForCalls();
+                break;
+            case SMS:
+                chipTypeSms.setChecked(true);
+                appSelectorContainer.setVisibility(View.GONE);
+                updateUIForSMS();
+                break;
         }
 
         // Parse existing template
@@ -693,20 +700,31 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
         config.setIgnoreSsl(ignoreSslSwitch.isChecked());
         config.setChunkedMode(chunkedModeSwitch.isChecked());
 
-        // Set activity type based on selected chip
-        if (chipTypePush.isChecked()) {
+        // Save forwarding type and related data
+        int selectedForwardingTypeId = forwardingTypeChipGroup.getCheckedChipId();
+        if (selectedForwardingTypeId == R.id.chip_type_sms_forward) {
+            config.setForwardingType(ForwardingConfig.ForwardingType.SMS);
+            config.setForwardingNumber(forwardingPhoneNumberInput.getText().toString().trim());
+            // Clear webhook specific data if forwarding type is SMS
+            config.setUrl("");
+            config.setTemplate("");
+            config.setHeaders("");
+        } else {
+            config.setForwardingType(ForwardingConfig.ForwardingType.WEBHOOK);
+            config.setForwardingNumber(null);
+            config.setTemplate(buildJsonTemplate());
+            config.setHeaders(buildHeaders());
+        }
+
+        // Save activity type and source
+        int selectedActivityTypeId = activityTypeChipGroup.getCheckedChipId();
+        if (selectedActivityTypeId == R.id.chip_type_push) {
             config.setActivityType(ForwardingConfig.ActivityType.PUSH);
-        } else if (chipTypeCall.isChecked()) {
+        } else if (selectedActivityTypeId == R.id.chip_type_call) {
             config.setActivityType(ForwardingConfig.ActivityType.CALL);
         } else {
             config.setActivityType(ForwardingConfig.ActivityType.SMS);
         }
-
-        // Build JSON template
-        config.setTemplate(buildJsonTemplate());
-
-        // Build headers
-        config.setHeaders(buildHeaders());
 
         // Enhanced data configuration
         config.setEnhancedDataEnabled(enhancedDataEnabledSwitch.isChecked());
@@ -1012,34 +1030,38 @@ public class ForwardingRuleEditActivity extends AppCompatActivity {
     }
 
     private void setupActivityTypeHandling() {
-        activityTypeChipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.contains(R.id.chip_type_push)) {
-                // Show app selector for push notifications
-                appSelectorContainer.setVisibility(View.VISIBLE);
+        activityTypeChipGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.chip_type_push) {
                 updateUIForPushNotifications();
-            } else if (checkedIds.contains(R.id.chip_type_call)) {
-                // Show phone numbers for calls
+            } else if (checkedId == R.id.chip_type_call) {
                 updateUIForCalls();
             } else {
-                // Hide app selector for SMS
-                appSelectorContainer.setVisibility(View.GONE);
                 updateUIForSMS();
             }
         });
     }
 
-    private void updateUIForPushNotifications() {
-        // Show app selector for push notifications (only if not using "All sources")
-        if (!allSourcesSwitch.isChecked()) {
-            appSelectorContainer.setVisibility(View.VISIBLE);
+    private void setupForwardingTypeHandling() {
+        forwardingTypeChipGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            updateUIForForwardingType();
+        });
+    }
+
+    private void updateUIForForwardingType() {
+        int checkedId = forwardingTypeChipGroup.getCheckedChipId();
+        if (checkedId == R.id.chip_type_sms_forward) {
+            webhookSettingsContainer.setVisibility(View.GONE);
+            smsForwardingContainer.setVisibility(View.VISIBLE);
         } else {
-            appSelectorContainer.setVisibility(View.GONE);
+            webhookSettingsContainer.setVisibility(View.VISIBLE);
+            smsForwardingContainer.setVisibility(View.GONE);
         }
+    }
 
-        // Hide SMS phone number field for push notifications
+    private void updateUIForPushNotifications() {
+        // Show app selector, hide phone inputs
+        appSelectorContainer.setVisibility(View.VISIBLE);
         smsPhoneContainer.setVisibility(View.GONE);
-
-        // Hide call phone numbers container
         callPhoneNumbersContainer.setVisibility(View.GONE);
 
         // Update template variables info
