@@ -96,6 +96,34 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
     protected void callWebHook(ForwardingConfig config, String sender, String slotName,
             String content, long timeStamp) {
 
+        try {
+            // Create message data as JSON
+            org.json.JSONObject messageData = new org.json.JSONObject();
+            messageData.put("from", sender);
+            messageData.put("text", content);
+            messageData.put("sim", slotName);
+            messageData.put("timestamp", timeStamp);
+            messageData.put("sentStamp", timeStamp);
+            messageData.put("receivedStamp", System.currentTimeMillis());
+            
+            // Use DeliveryRouter to handle all delivery methods
+            DeliveryRouter router = new DeliveryRouter(context);
+            router.routeDelivery(config, "sms_received", messageData);
+            
+        } catch (Exception e) {
+            android.util.Log.e("SmsBroadcastReceiver", "Error routing SMS delivery", e);
+            
+            // Fallback to original webhook method for HTTP POST only
+            if (config.getDeliveryMethod() == DeliveryMethod.HTTP_POST) {
+                callWebHookFallback(config, sender, slotName, content, timeStamp);
+            }
+        }
+    }
+    
+    // Fallback method for HTTP POST delivery
+    private void callWebHookFallback(ForwardingConfig config, String sender, String slotName,
+            String content, long timeStamp) {
+
         // Use enhanced message preparation if enabled, otherwise use regular template
         String message = config.prepareEnhancedMessage(sender, content, slotName, timeStamp);
 
@@ -124,7 +152,6 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
         WorkManager
                 .getInstance(this.context)
                 .enqueue(workRequest);
-
     }
 
     private int detectSim(Bundle bundle) {

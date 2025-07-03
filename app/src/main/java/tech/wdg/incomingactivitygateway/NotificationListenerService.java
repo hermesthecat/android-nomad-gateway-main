@@ -126,6 +126,35 @@ public class NotificationListenerService extends android.service.notification.No
 
     private void sendNotificationWebhook(ForwardingConfig config, String packageName, String title, String content,
             String fullMessage) {
+        try {
+            long timeStamp = System.currentTimeMillis();
+            
+            // Create message data as JSON
+            org.json.JSONObject messageData = new org.json.JSONObject();
+            messageData.put("package", packageName);
+            messageData.put("title", title);
+            messageData.put("content", content);
+            messageData.put("text", fullMessage);
+            messageData.put("timestamp", timeStamp);
+            messageData.put("sentStamp", timeStamp);
+            
+            // Use DeliveryRouter to handle all delivery methods
+            DeliveryRouter router = new DeliveryRouter(context);
+            router.routeDelivery(config, "push_notification_received", messageData);
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error routing push notification delivery", e);
+            
+            // Fallback to original webhook method for HTTP POST only
+            if (config.getDeliveryMethod() == DeliveryMethod.HTTP_POST) {
+                sendNotificationWebhookFallback(config, packageName, title, content, fullMessage);
+            }
+        }
+    }
+    
+    // Fallback method for HTTP POST delivery
+    private void sendNotificationWebhookFallback(ForwardingConfig config, String packageName, String title, String content,
+            String fullMessage) {
         long timeStamp = System.currentTimeMillis();
 
         // Use enhanced message preparation if enabled, otherwise use regular template
