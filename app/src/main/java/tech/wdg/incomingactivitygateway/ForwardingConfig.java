@@ -61,6 +61,11 @@ public class ForwardingConfig {
     private static final String KEY_INCLUDE_SIM_INFO = "includeSimInfo";
     private static final String KEY_INCLUDE_NETWORK_INFO = "includeNetworkInfo";
     private static final String KEY_INCLUDE_APP_CONFIG = "includeAppConfig";
+    
+    // Delivery method configuration keys
+    private static final String KEY_DELIVERY_METHOD = "deliveryMethod";
+    private static final String KEY_SMS_PHONE_NUMBER = "smsPhoneNumber";
+    private static final String KEY_EMAIL_ADDRESS = "emailAddress";
 
     public long id;
     public boolean isOn = true;
@@ -84,6 +89,11 @@ public class ForwardingConfig {
     public boolean includeSimInfo = false;
     public boolean includeNetworkInfo = false;
     public boolean includeAppConfig = false;
+    
+    // Delivery method configuration
+    public DeliveryMethod deliveryMethod = DeliveryMethod.HTTP_POST;
+    public String smsPhoneNumber;
+    public String emailAddress;
 
     public ForwardingConfig(Context context) {
         this.context = context;
@@ -226,6 +236,31 @@ public class ForwardingConfig {
     public void setIncludeAppConfig(boolean includeAppConfig) {
         this.includeAppConfig = includeAppConfig;
     }
+    
+    // Delivery method getters and setters
+    public DeliveryMethod getDeliveryMethod() {
+        return this.deliveryMethod;
+    }
+    
+    public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+    
+    public String getSmsPhoneNumber() {
+        return this.smsPhoneNumber;
+    }
+    
+    public void setSmsPhoneNumber(String smsPhoneNumber) {
+        this.smsPhoneNumber = smsPhoneNumber;
+    }
+    
+    public String getEmailAddress() {
+        return this.emailAddress;
+    }
+    
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
 
     public static String getDefaultJsonTemplate() {
         return "{\n  \"from\":\"%from%\",\n  \"text\":\"%text%\",\n  \"sentStamp\":%sentStamp%,\n  \"receivedStamp\":%receivedStamp%,\n  \"sim\":\"%sim%\"\n}";
@@ -266,6 +301,11 @@ public class ForwardingConfig {
             json.put(KEY_INCLUDE_SIM_INFO, this.includeSimInfo);
             json.put(KEY_INCLUDE_NETWORK_INFO, this.includeNetworkInfo);
             json.put(KEY_INCLUDE_APP_CONFIG, this.includeAppConfig);
+            
+            // Delivery method configuration
+            json.put(KEY_DELIVERY_METHOD, this.deliveryMethod.getKey());
+            json.put(KEY_SMS_PHONE_NUMBER, this.smsPhoneNumber);
+            json.put(KEY_EMAIL_ADDRESS, this.emailAddress);
 
             SharedPreferences.Editor editor = getEditor(context);
             editor.putString(this.getKey(), json.toString());
@@ -359,6 +399,17 @@ public class ForwardingConfig {
                     }
                     if (json.has(KEY_INCLUDE_APP_CONFIG)) {
                         config.includeAppConfig = json.getBoolean(KEY_INCLUDE_APP_CONFIG);
+                    }
+                    
+                    // Load delivery method configuration
+                    if (json.has(KEY_DELIVERY_METHOD)) {
+                        config.deliveryMethod = DeliveryMethod.fromKey(json.getString(KEY_DELIVERY_METHOD));
+                    }
+                    if (json.has(KEY_SMS_PHONE_NUMBER)) {
+                        config.smsPhoneNumber = json.getString(KEY_SMS_PHONE_NUMBER);
+                    }
+                    if (json.has(KEY_EMAIL_ADDRESS)) {
+                        config.emailAddress = json.getString(KEY_EMAIL_ADDRESS);
                     }
 
                     config.id = config.getKey().hashCode();
