@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2025-07-03
+
+### Changed
+
+- **BREAKING**: Package name changed from `tech.wdg.incomingactivitygateway` to `com.keremgok.hermesgateway`
+- Application name updated to "Hermes Gateway"
+- Complete rebranding of the project
+- All Java classes and imports updated to new package structure
+- AndroidManifest.xml and build configuration updated
+- Maintained full backward compatibility for user data and settings
+
+### Fixed
+
+- Layout XML namespace issues with CardView attributes
+- Exception handling in EmailDeliveryService and SmtpEmailDeliveryService
+- JavaMail packaging conflicts in build configuration
+
+### Technical
+
+- Version code incremented to 13
+- Build system validated and tested
+- All Android instrumentation tests updated and passing
+
 ## [1.3.0] - 2025-06-04
 
 ### Added

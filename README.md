@@ -1,6 +1,8 @@
-# Incoming SMS, Calls & Notifications Gateway
+# Hermes Gateway - Incoming SMS, Calls & Notifications Gateway
 
 This is a free, open-source Android app that automatically forwards incoming SMS messages, phone calls, and push notifications to specified URLs as JSON via HTTP POST.
+
+> **Note**: This project was formerly known as "Android Nomad Gateway" and has been rebranded to "Hermes Gateway" with package name `com.keremgok.hermesgateway`.
 
 ## Features
 
