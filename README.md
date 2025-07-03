@@ -1,5 +1,10 @@
 # Hermes Gateway - Incoming SMS, Calls & Notifications Gateway
 
+[![CI](https://github.com/hermesthecat/android-nomad-gateway-main/actions/workflows/ci.yml/badge.svg)](https://github.com/hermesthecat/android-nomad-gateway-main/actions/workflows/ci.yml)
+[![Release](https://github.com/hermesthecat/android-nomad-gateway-main/actions/workflows/release.yml/badge.svg)](https://github.com/hermesthecat/android-nomad-gateway-main/actions/workflows/release.yml)
+[![Latest Release](https://img.shields.io/github/v/release/hermesthecat/android-nomad-gateway-main)](https://github.com/hermesthecat/android-nomad-gateway-main/releases/latest)
+[![License](https://img.shields.io/github/license/hermesthecat/android-nomad-gateway-main)](LICENSE.txt)
+
 This is a free, open-source Android app that automatically forwards incoming SMS messages, phone calls, and push notifications to specified URLs as JSON via HTTP POST.
 
 > **Note**: This project was formerly known as "Android Nomad Gateway" and has been rebranded to "Hermes Gateway" with package name `com.keremgok.hermesgateway`.
