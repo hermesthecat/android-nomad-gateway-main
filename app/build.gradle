@@ -8,14 +8,15 @@ android {
         applicationId = "com.keremgok.hermesgateway"
         minSdk = 26
         targetSdk = 35
-        versionCode = 16
-        versionName = "1.6.1"
+        versionCode = 17
+        versionName = "1.6.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         debug {
+            // Use default debug keystore - will be created by CI if needed
             storeFile file("${System.getProperty('user.home')}/.android/debug.keystore")
             storePassword "android"
             keyAlias "androiddebugkey"
