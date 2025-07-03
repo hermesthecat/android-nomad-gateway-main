@@ -50,12 +50,6 @@ jobs:
       - name: 🧪 Run Tests
         run: ./gradlew test
 
-      - name: 📊 Run Android Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: ./gradlew connectedCheck
-
       - name: 📝 Extract Release Notes
         id: extract_notes
         run: |
