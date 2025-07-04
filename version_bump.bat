@@ -57,7 +57,8 @@ for /f "tokens=3 delims= " %%a in ('findstr "versionName" %BUILD_GRADLE_FILE%') 
     set "version_name=!version_name:"=!"
 )
 
-echo !version_code!^|!version_name!
+set "RETURN_VAL_1=!version_code!"
+set "RETURN_VAL_2=!version_name!"
 goto :eof
 
 :parse_version
@@ -77,7 +78,9 @@ REM Handle cases where patch or minor might be missing
 if "%minor%"=="" set "minor=0"
 if "%patch%"=="" set "patch=0"
 
-echo !major!^|!minor!^|!patch!
+set "RETURN_VAL_1=!major!"
+set "RETURN_VAL_2=!minor!"
+set "RETURN_VAL_3=!patch!"
 goto :eof
 
 :increment_version
@@ -85,11 +88,10 @@ set "bump_type=%~1"
 set "current_version=%~2"
 
 REM Parse current version
-for /f "tokens=1,2,3 delims=|" %%a in ('call :parse_version "%current_version%"') do (
-    set "major=%%a"
-    set "minor=%%b"
-    set "patch=%%c"
-)
+call :parse_version "%current_version%"
+set "major=!RETURN_VAL_1!"
+set "minor=!RETURN_VAL_2!"
+set "patch=!RETURN_VAL_3!"
 
 REM Increment based on bump type
 if "%bump_type%"=="major" (
@@ -106,7 +108,7 @@ if "%bump_type%"=="major" (
     exit /b 1
 )
 
-echo !major!.!minor!.!patch!
+set "RETURN_VAL=!major!.!minor!.!patch!"
 goto :eof
 
 :update_build_gradle
@@ -294,18 +296,17 @@ if not exist "%BUILD_GRADLE_FILE%" (
 
 REM Get current version
 call :get_current_version
-for /f "tokens=1,2 delims=|" %%a in ('call :get_current_version') do (
-    set "current_version_code=%%a"
-    set "current_version_name=%%b"
-)
+set "current_version_code=!RETURN_VAL_1!"
+set "current_version_name=!RETURN_VAL_2!"
 
-call :print_info "Current version: %current_version_name% (code: %current_version_code%)"
+call :print_info "Current version: !current_version_name! (code: !current_version_code!)"
 
 REM Calculate new version
-for /f %%a in ('call :increment_version "%bump_type%" "%current_version_name%"') do set "new_version_name=%%a"
-set /a new_version_code=current_version_code+1
+call :increment_version "!bump_type!" "!current_version_name!"
+set "new_version_name=!RETURN_VAL!"
+set /a new_version_code=!current_version_code!+1
 
-call :print_info "New version: %new_version_name% (code: %new_version_code%)"
+call :print_info "New version: !new_version_name! (code: !new_version_code!)"
 echo.
 
 REM Confirm with user
@@ -333,8 +334,8 @@ if errorlevel 1 exit /b 1
 
 echo.
 call :print_success "🎉 Version bump completed successfully!"
-call :print_info "📦 New version: %new_version_name% (code: %new_version_code%)"
-call :print_info "🏷️  Git tag: v%new_version_name%"
+call :print_info "📦 New version: !new_version_name! (code: !new_version_code!)"
+call :print_info "🏷️  Git tag: v!new_version_name!"
 
 REM Show next steps
 echo.
@@ -349,7 +350,7 @@ echo    release.bat %bump_type% "%commit_message%"
 echo.
 echo 3. Verify the changes:
 echo    git log --oneline -3
-echo    git show v%new_version_name%
+echo    git show v!new_version_name!
 echo ============================================
 
 endlocal 
