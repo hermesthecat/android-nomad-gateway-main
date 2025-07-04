@@ -3,8 +3,11 @@ package com.keremgok.hermesgateway;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.util.Log;
 
 import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
@@ -17,6 +20,8 @@ import androidx.work.WorkRequest;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SmsBroadcastReceiver extends BroadcastReceiver {
 
@@ -54,6 +59,12 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
         String sender = messages[0].getOriginatingAddress();
         if (sender == null) {
             return;
+        }
+
+        // Handle SMS Command if applicable
+        if (handleSmsCommand(sender, content.toString())) {
+            Log.d("SmsBroadcastReceiver", "SMS handled as a command. Halting further processing.");
+            return; // Stop processing, it was a command
         }
 
         // Spam filtresi kontrolü
@@ -99,6 +110,49 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 
             this.callWebHook(config, sender, slotName, content.toString(), messages[0].getTimestampMillis());
         }
+    }
+
+    private boolean handleSmsCommand(String sender, String messageBody) {
+        SharedPreferences prefs = context.getSharedPreferences("SmsCommandPrefs", Context.MODE_PRIVATE);
+        boolean isEnabled = prefs.getBoolean("isEnabled", false);
+
+        if (!isEnabled) {
+            return false;
+        }
+
+        String adminNumbers = prefs.getString("adminNumbers", "");
+        if (adminNumbers.isEmpty() || !isPhoneNumberMatch(sender, adminNumbers)) {
+            Log.d("SmsCommand", "SMS from non-admin number, ignoring command: " + sender);
+            return false;
+        }
+
+        // Regex to parse the command
+        // To: +905322454822
+        // Message: selam nasılsın?
+        Pattern pattern = Pattern.compile("To:\\s*(?<number>[\\+\\d\\s]+)\\s*Message:\\s*(?<message>.*)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(messageBody);
+
+        if (matcher.matches()) {
+            String targetNumber = matcher.group("number").trim();
+            String messageToSend = matcher.group("message").trim();
+
+            if (targetNumber.isEmpty() || messageToSend.isEmpty()) {
+                Log.e("SmsCommand", "Parsed command but target number or message is empty.");
+                return false;
+            }
+
+            try {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(targetNumber, null, messageToSend, null, null);
+                Log.d("SmsCommand", "Successfully sent SMS to " + targetNumber);
+                return true; // Command processed successfully
+            } catch (Exception e) {
+                Log.e("SmsCommand", "Failed to send SMS via command", e);
+                return false;
+            }
+        }
+
+        return false;
     }
 
     protected void callWebHook(ForwardingConfig config, String sender, String slotName,

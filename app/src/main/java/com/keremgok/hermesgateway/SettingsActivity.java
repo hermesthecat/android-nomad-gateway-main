@@ -32,6 +32,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,6 +57,9 @@ public class SettingsActivity extends AppCompatActivity {
     private Chip chipNotificationsPermission;
     private Chip chipNotificationListenerPermission;
     private Chip chipWifiPermission;
+
+    private MaterialSwitch smsCommandSwitch;
+    private TextInputEditText adminPhoneNumbersEditText;
 
     private MaterialButton btnRefreshLogs;
     private MaterialButton btnClearLogs;
@@ -82,6 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
         updateAppInfo();
         updateServiceStatus();
         updateAllPermissionStatus();
+        loadSmsCommandSettings();
     }
 
     private void setupToolbar() {
@@ -116,6 +122,9 @@ public class SettingsActivity extends AppCompatActivity {
         btnOperatorSettings = findViewById(R.id.btn_operator_settings);
         btnAppWebhooks = findViewById(R.id.btn_app_webhooks);
         btnSmsSpamFilter = findViewById(R.id.btn_sms_spam_filter);
+
+        smsCommandSwitch = findViewById(R.id.sms_command_switch);
+        adminPhoneNumbersEditText = findViewById(R.id.admin_phone_numbers);
     }
 
     private void setupClickListeners() {
@@ -125,6 +134,13 @@ public class SettingsActivity extends AppCompatActivity {
         btnOperatorSettings.setOnClickListener(v -> openOperatorSettings());
         btnAppWebhooks.setOnClickListener(v -> openAppWebhooks());
         btnSmsSpamFilter.setOnClickListener(v -> openSmsSpamFilter());
+
+        smsCommandSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> saveSmsCommandSettings());
+        adminPhoneNumbersEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                saveSmsCommandSettings();
+            }
+        });
 
         // Add click listeners for permission chips to open settings
         chipSmsPermission.setOnClickListener(v -> openAppSettings());
@@ -385,6 +401,32 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void loadSmsCommandSettings() {
+        android.content.SharedPreferences sharedPreferences = getSharedPreferences("SmsCommandPrefs", MODE_PRIVATE);
+        boolean isEnabled = sharedPreferences.getBoolean("isEnabled", false);
+        String adminNumbers = sharedPreferences.getString("adminNumbers", "");
+
+        smsCommandSwitch.setChecked(isEnabled);
+        adminPhoneNumbersEditText.setText(adminNumbers);
+        adminPhoneNumbersEditText.setEnabled(isEnabled);
+    }
+
+    private void saveSmsCommandSettings() {
+        android.content.SharedPreferences sharedPreferences = getSharedPreferences("SmsCommandPrefs", MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        boolean isEnabled = smsCommandSwitch.isChecked();
+        String adminNumbers = adminPhoneNumbersEditText.getText() != null ? adminPhoneNumbersEditText.getText().toString() : "";
+
+        editor.putBoolean("isEnabled", isEnabled);
+        editor.putString("adminNumbers", adminNumbers);
+        editor.apply();
+
+        adminPhoneNumbersEditText.setEnabled(isEnabled);
+
+        Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -426,6 +468,8 @@ public class SettingsActivity extends AppCompatActivity {
         btnOperatorSettings = null;
         btnAppWebhooks = null;
         btnSmsSpamFilter = null;
+        smsCommandSwitch = null;
+        adminPhoneNumbersEditText = null;
 
         Log.d(TAG, "SettingsActivity destroyed and cleaned up");
     }

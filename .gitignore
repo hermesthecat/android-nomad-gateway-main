@@ -68,3 +68,6 @@ fastlane/readme.md
 # Backup files
 *.backup
 *.tmp
+
+.cursor/
+userinput.py
